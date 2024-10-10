@@ -9,8 +9,6 @@
 # (y resoulution)
 # (looping behavior: 1 - loop, 0 - don't)
 
-dir="$(pwd)/"
-
 # reads a line into the variable with the name of the first command line arg.
 # if it doesnt exist, create it
 readline() {
@@ -42,32 +40,70 @@ validate_positivity() {
     fi
 }
 
-# read metadata 
+# from github
+show_cursor() {
+    tput cnorm
+    echo
+    exit
+}
+hide_cursor() {
+    tput civis
+}
 
-readint fps
-if [[ ${fps} -lt 1 || ${fps} -gt 360 ]]; then
-    echo "Error reading metadata: fps not within (1, 360)" >&2
-    exit 1
-fi
+# hide cursor to begin operation
+trap show_cursor INT TERM
+hide_cursor
 
-# rest of shannon data
-readint frames
-validate_positivity $frames
+# loop logic starts
+while true; do
+    # read metadata 
 
-readint x
-validate_positivity $x
+    readint fps
+    if [[ ${fps} -lt 1 || ${fps} -gt 360 ]]; then
+        echo "Error reading metadata: fps not within (1, 360)" >&2
+        exit 1
+    fi
 
-readint y
-validate_positivity $y
+    # rest of shannon data
+    readint frames
+    validate_positivity $frames
 
-readint loop
-if [[ ${loop} -ne 1 && ${loop} -ne 0 ]]; then
-    echo "Error reading metadata: looping behavior not defined" >&2
-    exit 1
-fi
+    readint x
+    validate_positivity $x
 
-# metadata read: start print loop
+    readint y
+    validate_positivity $y
 
+    readint loop
+    if [[ ${loop} -ne 1 && ${loop} -ne 0 ]]; then
+        echo "Error reading metadata: looping behavior not defined" >&2
+        exit 1
+    fi
 
+    # metadata read: start print loop
+    ofile=$(mktemp)
+    line=""
+    tick=$(echo "scale=8; 1/$fps" | bc)
+    for ((i=0; i < frames; i++)) ; do
+        # frame
+        for ((j=0; j < y; j++)); do
+            # line
+            readline line
+            echo ${line:0:x} >> ${ofile}
+        done
+        clear
+        cat ${ofile}
+        > ${ofile} # reset temp file
+        sleep ${tick}
+    done
 
+    rm ${ofile}
 
+    # break depending on loop behavior
+    if [[ ${loop} -eq 1 ]]; then
+        break
+    fi
+
+done
+
+show_cursor
