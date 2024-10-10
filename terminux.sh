@@ -7,7 +7,7 @@ msg="Hello from terminux.sh!"
 
 # sample animation
 fps=30
-if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
+if [[ -n "$1"  &&  "$1" =~ ^[0-9]+$ ]]; then
     fps=$(($1))
 fi
 

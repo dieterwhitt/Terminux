@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# animatable executor
+# input stream is animatable file.
+# metadata format: 6 lines
+# (framerate: 1 <= fps <= 360)
+# (number of frames)
+# (x resolution)
+# (y resoulution)
+# (looping behavior: 1 - loop, 0 - don't)
+
+dir="$(pwd)/"
+
+# reads a line into the variable with the name of the first command line arg.
+# if it doesnt exist, create it
+readline() {
+    local var_name="$1"  # The name of the variable to store the input
+    IFS= read -r "$var_name"  # Read the input into the variable
+}
+
+# reads the first int on a line, ignores the rest of the line
+# unsigned int only
+readint() {
+    local var_name="$1"
+    IFS= read -r line
+    # Use eval to assign the first integer from the line to the variable whose 
+    # name is stored in var_name
+    eval "$var_name=\$(echo \"$line\" | grep -o -m 1 '[0-9]\+')"
+    if [[ -z $(eval "echo \$$var_name") ]]; then
+        # number not found
+        echo "Error reading number: number not found on line" >&2
+        exit 1
+    fi
+}
+
+# throws error if given number is not strictly positive
+validate_positivity() {
+    local val="$1"
+    if [[ ${val} -lt 1 ]]; then
+        echo "Error reading metadata: number not strictly positive" >&2
+        exit 1
+    fi
+}
+
+# read metadata 
+
+readint fps
+if [[ ${fps} -lt 1 || ${fps} -gt 360 ]]; then
+    echo "Error reading metadata: fps not within (1, 360)" >&2
+    exit 1
+fi
+
+# rest of shannon data
+readint frames
+validate_positivity $frames
+
+readint x
+validate_positivity $x
+
+readint y
+validate_positivity $y
+
+readint loop
+if [[ ${loop} -ne 1 && ${loop} -ne 0 ]]; then
+    echo "Error reading metadata: looping behavior not defined" >&2
+    exit 1
+fi
+
+# metadata read: start print loop
+
+
+
+
