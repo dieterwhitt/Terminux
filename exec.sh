@@ -41,22 +41,33 @@ validate_positivity() {
 }
 
 # from github
-show_cursor() {
+show_cursor() { # also exits
     tput cnorm
     echo
     exit
 }
+
 hide_cursor() {
     tput civis
 }
 
+# get file
+dir="$(pwd)/"
+if [[ ! -f "$1" ]]; then
+    echo "File $1 not found in ${dir}" >&2
+    exit 1
+fi
+file="${dir}$1"
+
 # hide cursor to begin operation
-trap show_cursor INT TERM
+trap show_cursor SIGINT TERM EXIT
 hide_cursor
 
 # loop logic starts
 while true; do
-    # read metadata 
+    # read metadata
+    # open input file
+    exec < ${file}
 
     readint fps
     if [[ ${fps} -lt 1 || ${fps} -gt 360 ]]; then
@@ -100,7 +111,7 @@ while true; do
     rm ${ofile}
 
     # break depending on loop behavior
-    if [[ ${loop} -eq 1 ]]; then
+    if [[ ${loop} -eq 0 ]]; then
         break
     fi
 
