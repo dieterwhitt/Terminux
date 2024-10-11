@@ -100,7 +100,7 @@ while true; do
         for ((j=0; j < y; j++)); do
             # line
             readline line
-            echo ${line:0:x} >> ${ofile}
+            echo "${line:0:x}" >> ${ofile}
         done
         clear
         cat ${ofile}
@@ -117,4 +117,5 @@ while true; do
 
 done
 
+sleep 0.25
 show_cursor
