@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-dir="$(pwd)/"
-argc=$#
-
 msg="Hello from terminux.sh!"
 
 # sample animation
