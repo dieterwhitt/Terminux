@@ -2,7 +2,8 @@
 
 # animatable executor
 # input stream is animatable file.
-# metadata format: 6 lines
+# metadata format: 5 lines
+
 # (framerate: 1 <= fps <= 360)
 # (number of frames)
 # (x resolution)
@@ -53,11 +54,11 @@ hide_cursor() {
 
 # get file
 dir="$(pwd)/"
-if [[ ! -f "$1" ]]; then
-    echo "File $1 not found in ${dir}" >&2
+file="${dir}$1"
+if [[ ! -f ${file} ]]; then
+    echo "File ${file} not found." >&2
     exit 1
 fi
-file="${dir}$1"
 
 # hide cursor to begin operation
 trap show_cursor SIGINT TERM EXIT

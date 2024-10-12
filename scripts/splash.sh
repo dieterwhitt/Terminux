@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-msg="Hello from terminux.sh!"
+msg="Hello from Terminux!"
 
 # sample animation
 fps=30
