@@ -33,9 +33,9 @@ class StaticCanvas {
         int get_length() const;
 
         // read function that attempts to read a .stcan file
-        // returns a reference to a stack-allocated static canvas with the given data
+        // returns a pointer to a heap-allocated static canvas with the given data
         // must be compatible with StaticCanvas.print_stcan()
-        static StaticCanvas &read_stcan(string filename);
+        static StaticCanvas *read_stcan(string filename);
 
         // prints a representation of the static canvas (.stcan) for user editing
         // metadata is clearly labeled and editable

@@ -23,7 +23,7 @@ class Frame {
         vector<vector<char>> data;
     public:
         // constructor 1: creates blank frame
-        Frame();
+        Frame(int width, int height);
         // constructor 2: using given data
         Frame(vector<vector<char>> data);
 
@@ -34,14 +34,14 @@ class Frame {
         int get_height() const;
         int is_blank() const;
 
-        // read function that attempts to read a .frame file
-        // returns a reference to a stack-allocated frame object with the given data
-        // must be compatible with Frame.print_frame()
-        static Frame &read_frame(string filename);
-
         // compile multiple frames into animatable (.anim)
         // custom logic if filename not defined: animation{n}.anim
         static void compile(int framerate = 30, bool loop = false, string filename = "", vector<Frame>);
+
+        // read function that attempts to read a .frame file
+        // returns a pointer to a heap-allocated frame object with the given data
+        // must be compatible with Frame.print_frame()
+        static Frame *read_frame(string filename);
 
         // prints a representation of the frame (.frame)
         void print_frame(string filename) const;
