@@ -11,7 +11,7 @@ using namespace std;
 
 class Video {
     private:
-        
+
     public:
         
 };

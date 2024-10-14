@@ -4,11 +4,15 @@
 # input stream is animatable file.
 # metadata format: 5 lines
 
+# below: all integers
 # (framerate: 1 <= fps <= 360)
 # (number of frames)
 # (x resolution)
 # (y resoulution)
 # (looping behavior: 1 - loop, 0 - don't)
+
+# followed by all frames concatenated together
+
 
 # reads a line into the variable with the name of the first command line arg.
 # if it doesnt exist, create it
