@@ -30,6 +30,8 @@ class Frame {
         // other constructors (for module 2, 3):
         // BrightnessVector parameter + rgb/luminance matrix
 
+        virtual ~Frame();
+
         int get_width() const;
         int get_height() const;
         int is_blank() const;
@@ -40,6 +42,7 @@ class Frame {
 
         // read function that attempts to read a .frame file
         // returns a pointer to a heap-allocated frame object with the given data
+        // (caller must destruct)
         // must be compatible with Frame.print_frame()
         static Frame *read_frame(string filename);
 

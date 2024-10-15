@@ -24,16 +24,17 @@ class StaticCanvas {
         vector<Frame> frames;
     public:
         // constructor with default values outlined in notion
-        StaticCanvas(int width = 64, int height = 64, int length = 10);
+        StaticCanvas(int width = 64, int height = 64, int length = 10, vector<Frame> frames = {});
         
-        ~StaticCanvas();
+        virtual ~StaticCanvas();
 
         int get_width() const;
         int get_height() const;
         int get_length() const;
 
         // read function that attempts to read a .stcan file
-        // returns a pointer to a heap-allocated static canvas with the given data
+        // returns a pointer to a heap-allocated static canvas with the given data 
+        // (caller must destruct)
         // must be compatible with StaticCanvas.print_stcan()
         static StaticCanvas *read_stcan(string filename);
 
