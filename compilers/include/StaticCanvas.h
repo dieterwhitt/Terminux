@@ -50,8 +50,8 @@ class StaticCanvas {
 
         // compilation function with default values
         // compiles static canvas into an animatable file (.anim)
-        // custom logic if filename not defined: animation{n}.anim
-        void compile(int framerate = 30, bool loop = false, string filename = "") const;
+        // custom logic if filename not defined: animation{n}.anim (handled in bash)
+        void compile(int framerate = 30, bool loop = false, string filename) const;
 
         // extends the static canvas by adding blank frames
         void extend(int n, string filename);

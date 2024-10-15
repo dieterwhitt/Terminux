@@ -84,8 +84,10 @@ void StaticCanvas::write_stcan(string filename) const {
     stcan_out.close();
 }
 
-void StaticCanvas::compile(int framerate = 30, bool loop = false, string filename = "") const {
-
+void StaticCanvas::compile(int framerate = 30, bool loop = false, string filename) const {
+    // just uses the frame class compilation (hard scaling)
+    Frame::compile(framerate, loop, filename, this->frames, this->width, 
+            this->height, false);
 }
 
 void StaticCanvas::extend(int n, string filename) {

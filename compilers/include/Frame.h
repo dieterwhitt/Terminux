@@ -24,7 +24,7 @@ class Frame {
     public:
         // constructor 1: creates blank frame
         Frame(int width, int height);
-        // constructor 2: using given data
+        // constructor 2: using given data (copies)
         Frame(vector<vector<char>> data);
 
         // other constructors (for module 2, 3):
@@ -38,8 +38,11 @@ class Frame {
         vector<vector<char>> get_data() const;
 
         // compile multiple frames into animatable (.anim)
-        // custom logic if filename not defined: animation{n}.anim
-        static void compile(int framerate = 30, bool loop = false, string filename = "", vector<Frame>);
+        // custom logic if filename not defined: animation{n}.anim (handled in bash)
+        // width and height must be defined. if scale is True, it will soft scale,
+        // otherwise it will hard scale (cutoff)
+        static void compile(int framerate = 30, bool loop = false, string filename, 
+                const vector<Frame> &frames, int width, int height, bool scale);
 
         // read function that attempts to read a .frame file
         // returns a pointer to a heap-allocated frame object with the given data
@@ -54,12 +57,12 @@ class Frame {
         // by default inserts at the end.
         void insert(string anim_filename, int posn = -1) const;
 
-        // scales the frame to a new resolution
+        // scales the frame proportionally to a new resolution (soft scale)
         // create new data vector, then approxtimate the value of each element
         // from the old data vector
         void scale(int new_width, int new_height);
 
-        // resizes the frame without any kind of scaling
+        // resizes the frame without any kind of scaling (hard scale)
         // if x/y is larger: fills in with spaces
         // if smaller: crops off
         void resize(int new_width, int new_height);
