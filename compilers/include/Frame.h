@@ -35,6 +35,7 @@ class Frame {
         int get_width() const;
         int get_height() const;
         int is_blank() const;
+        vector<vector<char>> get_data() const;
 
         // compile multiple frames into animatable (.anim)
         // custom logic if filename not defined: animation{n}.anim
@@ -46,8 +47,8 @@ class Frame {
         // must be compatible with Frame.print_frame()
         static Frame *read_frame(string filename);
 
-        // prints a representation of the frame (.frame)
-        void print_frame(string filename) const;
+        // writes a representation of the frame (.frame)
+        void write_frame(string filename) const;
 
         // inserts (links) the current frame into an animatable anim_filename
         // by default inserts at the end.
@@ -57,6 +58,14 @@ class Frame {
         // create new data vector, then approxtimate the value of each element
         // from the old data vector
         void scale(int new_width, int new_height);
+
+        // resizes the frame without any kind of scaling
+        // if x/y is larger: fills in with spaces
+        // if smaller: crops off
+        void resize(int new_width, int new_height);
 };
+
+// overload printing to easily print frames
+ostream &operator<<(ostream &os, const Frame &f);
 
 #endif

@@ -24,13 +24,18 @@ class StaticCanvas {
         vector<Frame> frames;
     public:
         // constructor with default values outlined in notion
-        StaticCanvas(int width = 64, int height = 64, int length = 10, vector<Frame> frames = {});
+        // creates a blank canvas (all frames are blank)
+        StaticCanvas(int width = 64, int height = 64, int length = 10);
+
+        // future constructors: creating static canvas from 2d, 3d dynamic canvases
+        // for manual tweaks to engine created animations
         
         virtual ~StaticCanvas();
 
         int get_width() const;
         int get_height() const;
         int get_length() const;
+        vector<Frame> get_frames() const;
 
         // read function that attempts to read a .stcan file
         // returns a pointer to a heap-allocated static canvas with the given data 
@@ -41,7 +46,7 @@ class StaticCanvas {
         // prints a representation of the static canvas (.stcan) for user editing
         // metadata is clearly labeled and editable
         // frames are surrounded by bars (|) and dashes (-) for clearer editing
-        void print_stcan(string filename) const;
+        void write_stcan(string filename) const;
 
         // compilation function with default values
         // compiles static canvas into an animatable file (.anim)
@@ -50,6 +55,16 @@ class StaticCanvas {
 
         // extends the static canvas by adding blank frames
         void extend(int n, string filename);
+
+        // scales the canvas to a new resolution
+        // create new data vector, then approxtimate the value of each element
+        // from the old data vector
+        void scale(int new_width, int new_height);
+
+        // resizes the canvas without any kind of scaling
+        // if x/y is larger: fills in with spaces
+        // if smaller: crops off
+        void resize(int new_width, int new_height);
 };
 
 #endif
