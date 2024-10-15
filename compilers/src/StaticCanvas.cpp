@@ -90,14 +90,25 @@ void StaticCanvas::compile(int framerate = 30, bool loop = false, string filenam
             this->height, false);
 }
 
-void StaticCanvas::extend(int n, string filename) {
-
+void StaticCanvas::extend(int n) {
+    this->length += n;
+    // create n new blank frames
+    for (int i = 0; i < n; ++i) {
+        Frame blank{this->width, this->height};
+        this->frames.push_back(blank);
+    }
 }
 
-void scale(int new_width, int new_height) {
-
+void StaticCanvas::scale(int new_width, int new_height) {
+    // scale all frames
+    for (int i = 0; i < this->length; ++i) {
+        this->frames[i].scale(new_width, new_height);
+    }
 }
 
-void resize(int new_width, int new_height) {
-
+void StaticCanvas::resize(int new_width, int new_height) {
+    // resize all frames
+    for (int i = 0; i < this->length; ++i) {
+        this->frames[i].resize(new_width, new_height);
+    }
 }

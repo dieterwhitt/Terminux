@@ -54,7 +54,7 @@ class StaticCanvas {
         void compile(int framerate = 30, bool loop = false, string filename) const;
 
         // extends the static canvas by adding blank frames
-        void extend(int n, string filename);
+        void extend(int n);
 
         // scales the canvas to a new resolution
         // create new data vector, then approxtimate the value of each element
