@@ -49,7 +49,7 @@ const vector<vector<char>> &Frame::get_data() const {
 }
 
 void Frame::compile(string filename, const vector<Frame> &frames, int width, int height, 
-        bool scale, int framerate = 30, bool loop = false) {
+        bool scale, int framerate, bool loop) {
 
     }
 
@@ -66,7 +66,7 @@ void Frame::write_frame(string filename) const {
     frame_out << *this << endl;
 }
 
-void Frame::insert(string anim_filename, int posn = -1) const {
+void Frame::insert(string anim_filename, int posn) const {
 
 }
 
