@@ -88,7 +88,7 @@ void StaticCanvas::write_stcan(string filename) const {
             "borders in the frames section below. \n"
             "Ensure that the frame borders remain aligned according to the width "
             "and height of the canvas. \nWhen you're ready, "
-            "compile using:\nterminux " << filename << endl;
+            "compile using:\n\nterminux " << filename << "\n" << endl;
     stcan_out << "You can use this commment space to write personal notes or "
             "descriptions for your animations.\nThe sections in this file are "
             "sectioned by \\section and \\end labels.\nPlease do not modify anything "

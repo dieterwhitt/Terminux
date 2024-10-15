@@ -1,0 +1,140 @@
+Metadata: DO NOT MODIFY!
+\section{metadata}
+Frame Width: 40
+Frame Height: 6
+Number of Frames: 16
+\end{metadata}
+
+\section{comments}
+
+Static Canvas: giveup.anim
+
+This is a Static Canvas. In this file, you can design ASCII animations with pixel-perfect accuracy!
+Create frames by editing the text segments within the rectangular borders in the frames section below. 
+Ensure that the frame borders remain aligned according to the width and height of the canvas. 
+When you're ready, compile using:
+terminux giveup.anim
+You can use this commment space to write personal notes or descriptions for your animations.
+The sections in this file are sectioned by \section and \end labels.
+Please do not modify anything within the metadata section.
+Within the frames section, ONLY modify the content within the frame borders. 
+
+
+
+\end{comments}
+
+\section{frames}
+1-----------------------------------------
+|                                        |
+|                                        |
+|   _                                    |
+|  (_                                    |
+|                                        |
+|                                        |
+2-----------------------------------------
+|                                        |
+|                                        |
+|   _                                    |
+|  (_/                                   |
+|   /                                    |
+|(_/                                     |
+3-----------------------------------------
+|                                        |
+|        ,                               |
+|   _                                    |
+|  (_/__(                                |
+| .-/                                    |
+|(_/                                     |
+4-----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _                              |
+|  (_/__(_(                              |
+| .-/                                    |
+|(_/                                     |
+5-----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _                            |
+|  (_/__(_(/__                           |
+| .-/                                    |
+|(_/                                     |
+6-----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _   _                        |
+|  (_/__(_(/___(/                        |
+| .-/                                    |
+|(_/                                     |
+7-----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _   _                        |
+|  (_/__(_(/___(/_                       |
+| .-/                                    |
+|(_/                                     |
+8-----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _   _                        |
+|  (_/__(_(/___(/_                       |
+| .-/                                    |
+|(_/                                     |
+9-----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _   _                        |
+|  (_/__(_(/___(/_  (_                   |
+| .-/                                    |
+|(_/                                     |
+10----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _   _                        |
+|  (_/__(_(/___(/_  (_(_/                |
+| .-/                                    |
+|(_/                                     |
+11----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _   _                        |
+|  (_/__(_(/___(/_  (_(_/                |
+| .-/                  /                 |
+|(_/                 _/                  |
+12----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _   _                        |
+|  (_/__(_(/___(/_  (_(_/_               |
+| .-/                .-/                 |
+|(_/                (_/                  |
+13----------------------------------------
+|                                        |
+|        ,                               |
+|   _     _ _   _       __               |
+|  (_/__(_(/___(/_  (_(_/_)_             |
+| .-/                .-/                 |
+|(_/                (_/                  |
+14----------------------------------------
+|                               /        |
+|        ,                     /         |
+|   _     _ _   _       __    /          |
+|  (_/__(_(/___(/_  (_(_/_)_             |
+| .-/                .-/                 |
+|(_/                (_/                  |
+15----------------------------------------
+|                               /        |
+|        ,                     /         |
+|   _     _ _   _       __    /          |
+|  (_/__(_(/___(/_  (_(_/_)_ o           |
+| .-/                .-/                 |
+|(_/                (_/                  |
+16----------------------------------------
+|                               /        |
+|        ,                     /         |
+|   _     _ _   _       __    /          |
+|  (_/__(_(/___(/_  (_(_/_)_ o           |
+| .-/                .-/                 |
+|(_/                (_/                  |
+------------------------------------------
+\end{frames}
