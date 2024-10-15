@@ -7,10 +7,11 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <stdexcept>
 
 using namespace std;
 
-StaticCanvas::StaticCanvas(int width = 64, int height = 64, int length = 10) {
+StaticCanvas::StaticCanvas(int width, int height, int length) {
     this->width = width;
     this->height = height;
     this->length = length;
@@ -39,7 +40,11 @@ vector<Frame> StaticCanvas::get_frames() const {
 }
 
 StaticCanvas *StaticCanvas::read_stcan(string filename) {
+    // attempt to read metadata, then skip to frames section and read frames.
+    // throw exception if something goes wrong: (metadata invalid/missing),
+    // frames invalid/missing/wrong size
 
+    return nullptr;
 }
 
 void StaticCanvas::write_stcan(string filename) const {
@@ -56,8 +61,8 @@ void StaticCanvas::write_stcan(string filename) const {
     stcan_out << meta_seperator << endl << endl;
 
     stcan_out << "Static Canvas: " << filename << endl;
-    stcan_out << "This is a Static Canvas. In this file, you can precisely "
-            "design your ASCII animations with pixel-perfect accuracy!" << endl;
+    stcan_out << "This is a Static Canvas. In this file, you can "
+            "design ASCII animations with pixel-perfect accuracy!" << endl;
     stcan_out << "Create frames by editing the text segments within the frame "
             "borders in the section below. "
             "Ensure that the frame borders remain aligned according to the width "
@@ -84,10 +89,10 @@ void StaticCanvas::write_stcan(string filename) const {
     stcan_out.close();
 }
 
-void StaticCanvas::compile(int framerate = 30, bool loop = false, string filename) const {
+void StaticCanvas::compile(string filename, int framerate, bool loop) const {
     // just uses the frame class compilation (hard scaling)
-    Frame::compile(framerate, loop, filename, this->frames, this->width, 
-            this->height, false);
+    Frame::compile(filename, this->frames, this->width, this->height, false, 
+            framerate, loop);
 }
 
 void StaticCanvas::extend(int n) {

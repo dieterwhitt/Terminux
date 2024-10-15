@@ -41,13 +41,14 @@ class Frame {
         // custom logic if filename not defined: animation{n}.anim (handled in bash)
         // width and height must be defined. if scale is True, it will soft scale,
         // otherwise it will hard scale (cutoff)
-        static void compile(int framerate = 30, bool loop = false, string filename, 
-                const vector<Frame> &frames, int width, int height, bool scale);
+        static void compile(string filename, const vector<Frame> &frames, int width, int height, 
+                bool scale, int framerate = 30, bool loop = false);
 
         // read function that attempts to read a .frame file
         // returns a pointer to a heap-allocated frame object with the given data
         // (caller must destruct)
-        // must be compatible with Frame.print_frame()
+        // must be compatible with Frame.print_frame().
+        // throws runtime exception if invalid.
         static Frame *read_frame(string filename);
 
         // writes a representation of the frame (.frame)

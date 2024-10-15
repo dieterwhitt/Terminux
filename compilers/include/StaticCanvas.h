@@ -40,7 +40,8 @@ class StaticCanvas {
         // read function that attempts to read a .stcan file
         // returns a pointer to a heap-allocated static canvas with the given data 
         // (caller must destruct)
-        // must be compatible with StaticCanvas.print_stcan()
+        // must be compatible with StaticCanvas.print_stcan().
+        // throws runtime exception if the file can't be read properly.
         static StaticCanvas *read_stcan(string filename);
 
         // prints a representation of the static canvas (.stcan) for user editing
@@ -51,7 +52,7 @@ class StaticCanvas {
         // compilation function with default values
         // compiles static canvas into an animatable file (.anim)
         // custom logic if filename not defined: animation{n}.anim (handled in bash)
-        void compile(int framerate = 30, bool loop = false, string filename) const;
+        void compile(string filename, int framerate = 30, bool loop = false) const;
 
         // extends the static canvas by adding blank frames
         void extend(int n);
