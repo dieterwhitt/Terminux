@@ -3,3 +3,4 @@
 practice/
 *.o
 *.out
+bin/

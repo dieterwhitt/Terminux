@@ -52,13 +52,13 @@ void StaticCanvas::write_stcan(string filename) const {
     string frame_seperator(this->width, '-');
     // print metadata header
     stcan_out << "Metadata: DO NOT MODIFY!" << endl;
-    stcan_out << "\section{metadata}" << endl;
+    stcan_out << "\\section{metadata}" << endl;
     stcan_out << "Width: " << this->width << endl;
     stcan_out << "Height: " << this->height << endl;
     stcan_out << "Length: " << this->length << endl;
-    stcan_out << "\end{metadata}" << endl;
+    stcan_out << "\\end{metadata}" << endl << endl;
 
-    stcan_out << "\section{comments}" << endl;
+    stcan_out << "\\section{comments}" << endl << endl;
     stcan_out << "Static Canvas: " << filename << endl;
     stcan_out << "This is a Static Canvas. In this file, you can "
             "design ASCII animations with pixel-perfect accuracy!" << endl;
@@ -69,13 +69,13 @@ void StaticCanvas::write_stcan(string filename) const {
             "compile using" << endl << "terminux " << filename << endl;
     stcan_out << "You can use this commment space to write personal notes or "
             "descriptions for your animations. The sections in this file are "
-            "sectioned by \section and \end labels. Please do not modify anything "
+            "sectioned by \\section and \\end labels. Please do not modify anything "
             "within the metadata section. Within the frames section, ONLY modify"
             "the content within the frame borders" << endl << endl << endl << endl;
     // stcan_out << "For more information on Static Canvases, visit (wiki link)!" << endl;
-    stcan_out << "\end{comments}" << endl;
+    stcan_out << "\\end{comments}" << endl;
     // print frame editing section
-    stcan_out << "\section{frames}" << endl;
+    stcan_out << "\\section{frames}" << endl;
     stcan_out << frame_seperator << endl;
     for (int f_idx = 0; f_idx < this->frames.size(); ++f_idx) {
         Frame frame = this->frames[f_idx];
@@ -91,7 +91,7 @@ void StaticCanvas::write_stcan(string filename) const {
         // frame printed: put seperator
         stcan_out << frame_seperator << endl;
     }
-    stcan_out << "\end{frames}" << endl;
+    stcan_out << "\\end{frames}" << endl;
     stcan_out.close();
 }
 
