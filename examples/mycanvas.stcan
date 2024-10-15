@@ -1,0 +1,140 @@
+Metadata: DO NOT MODIFY!
+\section{metadata}
+Frame Width: 40
+Frame Height: 6
+Number of Frames: 16
+\end{metadata}
+
+\section{comments}
+
+Static Canvas: mycanvas.anim
+
+This is a Static Canvas. In this file, you can design ASCII animations with pixel-perfect accuracy!
+Create frames by editing the text segments within the rectangular borders in the frames section below. 
+Ensure that the frame borders remain aligned according to the width and height of the canvas. 
+When you're ready, compile using:
+terminux mycanvas.anim
+You can use this commment space to write personal notes or descriptions for your animations.
+The sections in this file are sectioned by \section and \end labels.
+Please do not modify anything within the metadata section.
+Within the frames section, ONLY modify the content within the frame borders. 
+
+
+
+\end{comments}
+
+\section{frames}
+1-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+2-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+3-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+4-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+5-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+6-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+7-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+8-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+9-----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+10----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+11----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+12----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+13----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+14----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+15----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+16----------------------------------------
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+|                                        |
+------------------------------------------
+\end{frames}

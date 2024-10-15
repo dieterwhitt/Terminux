@@ -17,7 +17,7 @@ StaticCanvas::StaticCanvas(int width, int height, int length) {
     this->length = length;
     this->frames = {};
     // fill vector with blank frames
-    for (int i = 0; i < frames.size(); ++i) {
+    for (int i = 0; i < length; ++i) {
         Frame blank{width, height};
         this->frames.push_back(blank);
     }
@@ -47,38 +47,66 @@ StaticCanvas *StaticCanvas::read_stcan(string filename) {
     return nullptr;
 }
 
+// helpers for write_stcan()
+
+int num_digits(int n) {
+    if (-9 <= n && n <= 9) {
+        return 1;
+    } else {
+        // recursive case
+        return 1 + num_digits(n / 10);
+    }
+}
+
+string get_seperator(int index, int width, char character, bool show_digit) {
+    string output = "";
+    if (show_digit) {
+        output = to_string(index);
+        width -= num_digits(index);
+    }
+    for (int i = 0; i < width; ++i) {
+        output += character;
+    }
+    return output;
+}
+
 void StaticCanvas::write_stcan(string filename) const {
     ofstream stcan_out{filename};
-    string frame_seperator(this->width, '-');
     // print metadata header
     stcan_out << "Metadata: DO NOT MODIFY!" << endl;
     stcan_out << "\\section{metadata}" << endl;
-    stcan_out << "Width: " << this->width << endl;
-    stcan_out << "Height: " << this->height << endl;
-    stcan_out << "Length: " << this->length << endl;
-    stcan_out << "\\end{metadata}" << endl << endl;
+    stcan_out << "Frame Width: " << this->width << endl;
+    stcan_out << "Frame Height: " << this->height << endl;
+    stcan_out << "Number of Frames: " << this->length << endl;
+    stcan_out << "\\end{metadata}\n" << endl;
 
-    stcan_out << "\\section{comments}" << endl << endl;
-    stcan_out << "Static Canvas: " << filename << endl;
+    stcan_out << "\\section{comments}\n" << endl;
+    stcan_out << "Static Canvas: " << filename << "\n" << endl;
     stcan_out << "This is a Static Canvas. In this file, you can "
             "design ASCII animations with pixel-perfect accuracy!" << endl;
     stcan_out << "Create frames by editing the text segments within the rectangular "
-            "borders in the frames section below. "
+            "borders in the frames section below. \n"
             "Ensure that the frame borders remain aligned according to the width "
-            "and height of the canvas shown in the metadata above. When you're ready, "
-            "compile using" << endl << "terminux " << filename << endl;
+            "and height of the canvas. \nWhen you're ready, "
+            "compile using:\nterminux " << filename << endl;
     stcan_out << "You can use this commment space to write personal notes or "
-            "descriptions for your animations. The sections in this file are "
-            "sectioned by \\section and \\end labels. Please do not modify anything "
-            "within the metadata section. Within the frames section, ONLY modify"
-            "the content within the frame borders" << endl << endl << endl << endl;
+            "descriptions for your animations.\nThe sections in this file are "
+            "sectioned by \\section and \\end labels.\nPlease do not modify anything "
+            "within the metadata section.\nWithin the frames section, ONLY modify "
+            "the content within the frame borders. \n\n\n" << endl;
     // stcan_out << "For more information on Static Canvases, visit (wiki link)!" << endl;
-    stcan_out << "\\end{comments}" << endl;
+    stcan_out << "\\end{comments}\n" << endl;
     // print frame editing section
     stcan_out << "\\section{frames}" << endl;
-    stcan_out << frame_seperator << endl;
-    for (int f_idx = 0; f_idx < this->frames.size(); ++f_idx) {
+    int seperator_width = this->width + 2; // +2 to account for vertical border
+    char seperator_char = '-';
+    string seperator = "";
+    for (int f_idx = 0; f_idx < this->length; ++f_idx) {
         Frame frame = this->frames[f_idx];
+        // frame to be printed: put seperator
+        // number followed by dashes ('-')
+        seperator = get_seperator(f_idx + 1, seperator_width, seperator_char, true);
+        stcan_out << seperator << endl;
         for (int row = 0; row < this->height; ++row) {
             // put bars before and after rows
             stcan_out << '|';
@@ -88,9 +116,9 @@ void StaticCanvas::write_stcan(string filename) const {
             }
             stcan_out << '|' << endl;
         }
-        // frame printed: put seperator
-        stcan_out << frame_seperator << endl;
     }
+    // close bottom of frames
+    stcan_out << get_seperator(0, seperator_width, seperator_char, false) << endl;
     stcan_out << "\\end{frames}" << endl;
     stcan_out.close();
 }
