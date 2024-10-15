@@ -49,28 +49,33 @@ StaticCanvas *StaticCanvas::read_stcan(string filename) {
 
 void StaticCanvas::write_stcan(string filename) const {
     ofstream stcan_out{filename};
-    // file seperators
-    string meta_seperator(this->width, '*');
     string frame_seperator(this->width, '-');
     // print metadata header
-    stcan_out << meta_seperator << endl;
     stcan_out << "Metadata: DO NOT MODIFY!" << endl;
+    stcan_out << "\section{metadata}" << endl;
     stcan_out << "Width: " << this->width << endl;
     stcan_out << "Height: " << this->height << endl;
     stcan_out << "Length: " << this->length << endl;
-    stcan_out << meta_seperator << endl << endl;
+    stcan_out << "\end{metadata}" << endl;
 
+    stcan_out << "\section{comments}" << endl;
     stcan_out << "Static Canvas: " << filename << endl;
     stcan_out << "This is a Static Canvas. In this file, you can "
             "design ASCII animations with pixel-perfect accuracy!" << endl;
-    stcan_out << "Create frames by editing the text segments within the frame "
-            "borders in the section below. "
+    stcan_out << "Create frames by editing the text segments within the rectangular "
+            "borders in the frames section below. "
             "Ensure that the frame borders remain aligned according to the width "
             "and height of the canvas shown in the metadata above. When you're ready, "
             "compile using" << endl << "terminux " << filename << endl;
+    stcan_out << "You can use this commment space to write personal notes or "
+            "descriptions for your animations. The sections in this file are "
+            "sectioned by \section and \end labels. Please do not modify anything "
+            "within the metadata section. Within the frames section, ONLY modify"
+            "the content within the frame borders" << endl << endl << endl << endl;
     // stcan_out << "For more information on Static Canvases, visit (wiki link)!" << endl;
-    stcan_out << endl << endl << "FRAMES BEGIN: EDIT BELOW" << endl << endl;
+    stcan_out << "\end{comments}" << endl;
     // print frame editing section
+    stcan_out << "\section{frames}" << endl;
     stcan_out << frame_seperator << endl;
     for (int f_idx = 0; f_idx < this->frames.size(); ++f_idx) {
         Frame frame = this->frames[f_idx];
@@ -86,6 +91,7 @@ void StaticCanvas::write_stcan(string filename) const {
         // frame printed: put seperator
         stcan_out << frame_seperator << endl;
     }
+    stcan_out << "\end{frames}" << endl;
     stcan_out.close();
 }
 
