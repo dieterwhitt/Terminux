@@ -78,6 +78,7 @@ Frame *Frame::read_frame(string filename) {
     // create heap allocated frame from data
     Frame *result = new Frame{r_data};
     frame_in.close();
+    return result;
 }
 
 void Frame::write_frame(string filename) const {
