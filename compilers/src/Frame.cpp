@@ -75,7 +75,25 @@ void Frame::scale(int new_width, int new_height) {
 }
 
 void Frame::resize(int new_width, int new_height) {
-
+    // initialize new sized vector filled with spaces
+    vector<vector<char>> new_data(new_height, vector<char>(new_width, ' '));
+    for (int row = 0; row < this->height; ++row) {
+        // check that row is still valid in new matrix
+        if (row >= new_height) {
+            break;
+        }
+        for (int col = 0; col < this->width; ++col) {
+            // check that col is still valid in new matrix
+            if (col >= new_width) {
+                break;
+            }
+            // set value in new matrix
+            new_data[row][col] = this->data[row][col];
+        }
+    }
+    this->data = new_data;
+    this->width = new_width;
+    this->height = new_height;
 }
 
 ostream &operator<<(ostream &os, const Frame &f) {
@@ -88,4 +106,5 @@ ostream &operator<<(ostream &os, const Frame &f) {
             os << endl;
         }
     }
+    return os;
 }
