@@ -7,6 +7,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -54,8 +55,29 @@ void Frame::compile(string filename, const vector<Frame> &frames, int width, int
     }
 
 Frame *Frame::read_frame(string filename) {
-
-    return nullptr;
+    ifstream frame_in{filename};
+    // read metadata (width, height)
+    int r_width;
+    int r_height;
+    frame_in >> r_width >> r_height;
+    if (frame_in.fail()) {
+        throw runtime_error("Unable to read " + filename + " metadata.");
+    }
+    // fill data vector for frame construction
+    vector<vector<char>> r_data(r_height, vector<char>(r_width, ' '));
+    char pixel;
+    for (int row = 0; row < r_height; ++row) {
+        for (int col = 0; col < r_width; ++col) {
+            frame_in >> pixel;
+            if (frame_in.eof()) {
+                throw runtime_error("Unable to read " + filename + " frame data.");
+            }
+            r_data[row][col] = pixel;
+        }
+    }
+    // create heap allocated frame from data
+    Frame *result = new Frame{r_data};
+    frame_in.close();
 }
 
 void Frame::write_frame(string filename) const {
@@ -64,6 +86,7 @@ void Frame::write_frame(string filename) const {
     frame_out << this->width << endl;
     frame_out << this->height << endl;
     frame_out << *this << endl;
+    frame_out.close();
 }
 
 void Frame::insert(string anim_filename, int posn) const {

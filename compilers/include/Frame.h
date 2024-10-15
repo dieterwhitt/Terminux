@@ -30,8 +30,6 @@ class Frame {
         // other constructors (for module 2, 3):
         // BrightnessVector parameter + rgb/luminance matrix
 
-        virtual ~Frame();
-
         int get_width() const;
         int get_height() const;
         int is_blank() const;

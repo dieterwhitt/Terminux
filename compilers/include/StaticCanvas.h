@@ -29,8 +29,6 @@ class StaticCanvas {
 
         // future constructors: creating static canvas from 2d, 3d dynamic canvases
         // for manual tweaks to engine created animations
-        
-        virtual ~StaticCanvas();
 
         int get_width() const;
         int get_height() const;
