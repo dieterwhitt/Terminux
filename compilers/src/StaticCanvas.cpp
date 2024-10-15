@@ -42,7 +42,7 @@ vector<Frame> StaticCanvas::get_frames() const {
 StaticCanvas *StaticCanvas::read_stcan(string filename) {
     // attempt to read metadata, then skip to frames section and read frames.
     // throw exception if something goes wrong: (metadata invalid/missing),
-    // frames invalid/missing/wrong size
+    // frames invalid/missing/wrong size. then return nullptr
 
     return nullptr;
 }

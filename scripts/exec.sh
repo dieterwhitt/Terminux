@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # animatable executor
-# input stream is animatable file.
-# metadata format: 5 lines
+# .anim metadata format: 5 lines:
 
 # below: all integers
 # (framerate: 1 <= fps <= 360)

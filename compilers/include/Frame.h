@@ -35,7 +35,8 @@ class Frame {
         int get_width() const;
         int get_height() const;
         int is_blank() const;
-        vector<vector<char>> get_data() const;
+        // returns a const reference (read-only) of data
+        const vector<vector<char>> &get_data() const;
 
         // compile multiple frames into animatable (.anim)
         // custom logic if filename not defined: animation{n}.anim (handled in bash)
@@ -50,6 +51,11 @@ class Frame {
         // must be compatible with Frame.print_frame().
         // throws runtime exception if invalid.
         static Frame *read_frame(string filename);
+
+        // read function that attempts to read a .png
+        // returns a pointer to a heap-allocated frame object with the given data
+        // throws runtime exception if invalid.
+        static Frame *read_frame_png(string png_file, string out_file);
 
         // writes a representation of the frame (.frame)
         void write_frame(string filename) const;
@@ -69,7 +75,8 @@ class Frame {
         void resize(int new_width, int new_height);
 };
 
-// overload printing to easily print frames
+// overload printing to print frames (only data matrix is printed)
+// does NOT end with a newline.
 ostream &operator<<(ostream &os, const Frame &f);
 
 #endif
