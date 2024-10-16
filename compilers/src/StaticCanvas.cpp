@@ -2,11 +2,13 @@
 // 10/14/24
 
 #include "../include/StaticCanvas.h"
+#include "../include/util.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <stdexcept>
 
 using namespace std;
@@ -21,6 +23,13 @@ StaticCanvas::StaticCanvas(int width, int height, int length) {
         Frame blank{width, height};
         this->frames.push_back(blank);
     }
+}
+
+StaticCanvas::StaticCanvas(vector<Frame> frames) {
+    this->frames = frames;
+    this->width = frames[0].get_width();
+    this->height = frames[0].get_height();
+    this->length = frames.size();
 }
 
 int StaticCanvas::get_width() const {
@@ -43,8 +52,50 @@ StaticCanvas *StaticCanvas::read_stcan(string filename) {
     // attempt to read metadata, then skip to frames section and read frames.
     // throw exception if something goes wrong: (metadata invalid/missing),
     // frames invalid/missing/wrong size. then return nullptr
-
-    return nullptr;
+    string metadata = get_section(filename, "metadata");
+    istringstream meta_stream{metadata};
+    // metadata order: width, height, length
+    array<int, 3> metadata_fields{};
+    int i = 0;
+    int val = 0;
+    while (i < 3 and meta_stream >> val) {
+        if (meta_stream.eof()) {
+            // end of metadata before numbers read: throw error
+            throw runtime_error{"Invalid metadata read: " + filename};
+        } else if (meta_stream.fail()) {
+            // integer read fail: clear fail bit and ignore value
+            meta_stream.clear();
+            meta_stream.ignore();
+        } else {
+            // integer read
+            metadata_fields[i] = val;
+            ++i;
+        }
+    }
+    // read frames
+    string frames = get_section(filename, "frames");
+    istringstream frame_stream{frames};
+    string line = "";
+    // empty 2d vector with height and width set from metadata
+    vector<vector<char>> read_data{};
+    vector<Frame> frame_vec{};
+    for (int i = 0; i < metadata[2]; ++i) {
+        // clear read data for next frame
+        read_data.clear();
+        getline(frame_stream, line); // ignore first line (frame seperator)
+        for (int row = 0; row < metadata[1]; ++row) {
+            getline(frame_stream, line);
+            string readable = line.substr(1, metadata[0]);
+            // copy readable line to vector (iterator constructor)
+            vector<char> row_vec(readable.begin(), readable.end());
+            read_data.push_back(row_vec);
+        }
+        Frame f{read_data};
+        frame_vec.push_back(f);
+    }
+    // construct heap allocated canvas
+    StaticCanvas *output = new StaticCanvas{frame_vec};
+    return output;
 }
 
 // helpers for write_stcan()
@@ -70,6 +121,7 @@ string get_seperator(int index, int width, char character, bool show_digit) {
     return output;
 }
 
+// sections: {metadata}, {comments}, {frames}
 void StaticCanvas::write_stcan(string filename) const {
     ofstream stcan_out{filename};
     // print metadata header
@@ -85,15 +137,15 @@ void StaticCanvas::write_stcan(string filename) const {
     stcan_out << "This is a Static Canvas. In this file, you can "
             "design ASCII animations with pixel-perfect accuracy!" << endl;
     stcan_out << "Create frames by editing the text segments within the rectangular "
-            "borders in the frames section below. \n"
+            "borders in the frames section below.\n"
             "Ensure that the frame borders remain aligned according to the width "
-            "and height of the canvas. \nWhen you're ready, "
+            "and height of the canvas.\nWhen you're ready, "
             "compile using:\n\nterminux " << filename << "\n" << endl;
     stcan_out << "You can use this commment space to write personal notes or "
             "descriptions for your animations.\nThe sections in this file are "
             "sectioned by \\section and \\end labels.\nPlease do not modify anything "
             "within the metadata section.\nWithin the frames section, ONLY modify "
-            "the content within the frame borders. \n\n\n" << endl;
+            "the content within the frame borders.\n\n\n" << endl;
     // stcan_out << "For more information on Static Canvases, visit (wiki link)!" << endl;
     stcan_out << "\\end{comments}\n" << endl;
     // print frame editing section

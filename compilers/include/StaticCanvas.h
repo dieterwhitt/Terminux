@@ -27,6 +27,9 @@ class StaticCanvas {
         // creates a blank canvas (all frames are blank)
         StaticCanvas(int width = 64, int height = 64, int length = 10);
 
+        // creates a canvas from given frames (creates copy).
+        StaticCanvas(vector<Frame> frames);
+
         // future constructors: creating static canvas from 2d, 3d dynamic canvases
         // for manual tweaks to engine created animations
 

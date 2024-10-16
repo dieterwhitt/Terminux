@@ -24,7 +24,7 @@ class Frame {
     public:
         // constructor 1: creates blank frame
         Frame(int width, int height);
-        // constructor 2: using given data (copies)
+        // constructor 2: using given data (creates copy)
         Frame(vector<vector<char>> data);
 
         // other constructors (for module 2, 3):

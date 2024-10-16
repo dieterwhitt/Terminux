@@ -1,6 +1,9 @@
 // Frame.cpp
 // 10/15/24
 
+// to do: change from vector matrix to array matrix
+// define and assert function + class requirements
+
 #include "../include/Frame.h"
 
 #include <string>
