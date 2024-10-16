@@ -54,8 +54,17 @@ const vector<vector<char>> &Frame::get_data() const {
 
 void Frame::compile(string filename, const vector<Frame> &frames, int width, int height, 
         bool scale, int framerate, bool loop) {
-
+    ofstream output{filename};
+    output << framerate << endl;
+    output << frames.size() << endl;
+    output << width << endl;
+    output << height << endl;
+    output << int(loop) << endl; // 1 - loop, 0 - don't loop
+    for (int i = 0; i < frames.size(); ++i) {
+        output << frames[i] << endl;
     }
+    output.close();
+}
 
 Frame *Frame::read_frame(string filename) {
     ifstream frame_in{filename};
@@ -82,6 +91,10 @@ Frame *Frame::read_frame(string filename) {
     Frame *result = new Frame{r_data};
     frame_in.close();
     return result;
+}
+
+static Frame *read_frame_png(string png_file, string out_file) {
+    
 }
 
 void Frame::write_frame(string filename) const {
@@ -129,7 +142,7 @@ ostream &operator<<(ostream &os, const Frame &f) {
             os << f.get_data()[row][col];
         }
         // add newline after all rows except last
-        if (row == f.get_height() - 1) {
+        if (row != f.get_height() - 1) {
             os << endl;
         }
     }
