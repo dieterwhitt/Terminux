@@ -19,9 +19,9 @@ void create() {
 void compile_and_copy() {
     try {
         // test: compile terminux/examples/giveup.stcan
-        StaticCanvas *giveup = StaticCanvas::read_stcan("giveup.stcan");
+        StaticCanvas *giveup = StaticCanvas::read_stcan("../../examples/giveup.stcan");
         giveup->compile("giveup.anim", 20);
-        giveup->write_stcan("giveup_copy");
+        giveup->write_stcan("giveup_copy.anim");
         delete giveup;
     } catch (string e) {
         cerr << e << endl;
@@ -50,10 +50,11 @@ void test_util_get_section() {
     "Please do not modify anything within the metadata section.\n"
     "Within the frames section, ONLY modify the content within the frame borders.\n"
     "\n\n\n");
-    cout << "ASSERTION PASSED: test_util_get_section()" << endl;
+
+    cout << "ASSERTIONS PASSED: test_util_get_section()" << endl;
 }
 
 int main(int argc, char** argv) {
-    //compile_and_copy();
     test_util_get_section();
+    compile_and_copy();
 }

@@ -15,44 +15,26 @@ string get_section(string filename, string label) {
     ifstream file{filename};
     string line = "";
     string word = "";
-    bool in_section = false;
-    bool done = false; // done reading section
+    bool in_section = false; // in desired section
+    bool done = false;
     ostringstream output{""};
     string section = "\\section{" + label + "}";
     string end = "\\end{" + label + "}";
-    bool first_word = true; // for spaces between words
-    // extra logic: if \begin is the only word in the line: skip the newline right after
-    bool add_newline = false;
     while (!done && getline(file, line)) {
-        cout << "LINE: " << line << endl;
+        // first check for keywords
         istringstream line_stream{line};
-        first_word = true;
-        while (!done && line_stream >> word) {
-            cout << "WORD: " << word << endl;
-            if (!in_section && word == section) {
-                add_newline = false; // do not add newline directly after \section
+        if (line_stream >> word) {
+            if (word == section) {
                 in_section = true;
-            } else if (in_section && word == end) {
+                continue; // skip adding anything from this line
+            } else if (word == end && in_section) {
                 done = true;
-                add_newline = false;
-            } else if (in_section) {
-                // reading section word
-                if (!first_word) {
-                    output << " ";
-                }
-                first_word = false;
-                add_newline = true;
-                output << word;
+                in_section = false;
             }
         }
-        // end of line: add newline
-        if (add_newline) {
-            cout << "ADDING NEWLINE" << endl;
-            output << endl;
-        }
-        // after skipping a newline in a section, add all newlines after
+        // add line when in section
         if (in_section) {
-            add_newline = true;
+            output << line << endl;
         }
     }
     if (!done) {

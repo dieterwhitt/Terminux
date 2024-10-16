@@ -51,14 +51,15 @@ vector<Frame> StaticCanvas::get_frames() const {
 StaticCanvas *StaticCanvas::read_stcan(string filename) {
     // attempt to read metadata, then skip to frames section and read frames.
     // throw exception if something goes wrong: (metadata invalid/missing),
-    // frames invalid/missing/wrong size. then return nullptr
+    // frames invalid/missing/wrong size. 
     string metadata = get_section(filename, "metadata");
     istringstream meta_stream{metadata};
     // metadata order: width, height, length
     array<int, 3> metadata_fields{};
     int i = 0;
     int val = 0;
-    while (i < 3 and meta_stream >> val) {
+    while (i < 3) {
+        meta_stream >> val;
         if (meta_stream.eof()) {
             // end of metadata before numbers read: throw error
             throw runtime_error{"Invalid metadata read: " + filename};
@@ -79,13 +80,15 @@ StaticCanvas *StaticCanvas::read_stcan(string filename) {
     // empty 2d vector with height and width set from metadata
     vector<vector<char>> read_data{};
     vector<Frame> frame_vec{};
-    for (int i = 0; i < metadata[2]; ++i) {
+    for (int i = 0; i < metadata_fields[2]; ++i) {
         // clear read data for next frame
         read_data.clear();
         getline(frame_stream, line); // ignore first line (frame seperator)
-        for (int row = 0; row < metadata[1]; ++row) {
+        for (int row = 0; row < metadata_fields[1]; ++row) {
             getline(frame_stream, line);
-            string readable = line.substr(1, metadata[0]);
+            // cout << "LINE " << line << endl;
+            string readable = line.substr(1, metadata_fields[0]);
+
             // copy readable line to vector (iterator constructor)
             vector<char> row_vec(readable.begin(), readable.end());
             read_data.push_back(row_vec);
@@ -143,7 +146,8 @@ void StaticCanvas::write_stcan(string filename) const {
             "compile using:\n\nterminux " << filename << "\n" << endl;
     stcan_out << "You can use this commment space to write personal notes or "
             "descriptions for your animations.\nThe sections in this file are "
-            "sectioned by \\section and \\end labels.\nPlease do not modify anything "
+            "sectioned by \\section and \\end labels.\nMake sure the lines containing "
+            "these tags have no other characters.\nPlease do not modify anything "
             "within the metadata section.\nWithin the frames section, ONLY modify "
             "the content within the frame borders.\n\n\n" << endl;
     // stcan_out << "For more information on Static Canvases, visit (wiki link)!" << endl;
