@@ -7,13 +7,16 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <array>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <cassert>
 
 using namespace std;
 
 StaticCanvas::StaticCanvas(int width, int height, int length) {
+    assert(width > 0 && height > 0 && length > 0);
     this->width = width;
     this->height = height;
     this->length = length;
@@ -26,6 +29,7 @@ StaticCanvas::StaticCanvas(int width, int height, int length) {
 }
 
 StaticCanvas::StaticCanvas(vector<Frame> frames) {
+    assert(!frames.empty());
     this->frames = frames;
     this->width = frames[0].get_width();
     this->height = frames[0].get_height();
@@ -180,12 +184,14 @@ void StaticCanvas::write_stcan(string filename) const {
 }
 
 void StaticCanvas::compile(string filename, int framerate, bool loop) const {
+    assert(framerate > 0);
     // just uses the frame class compilation (hard scaling)
     Frame::compile(filename, this->frames, this->width, this->height, false, 
             framerate, loop);
 }
 
 void StaticCanvas::extend(int n) {
+    assert(n > 0);
     this->length += n;
     // create n new blank frames
     for (int i = 0; i < n; ++i) {
@@ -195,6 +201,7 @@ void StaticCanvas::extend(int n) {
 }
 
 void StaticCanvas::scale(int new_width, int new_height) {
+    assert(new_width > 0 && new_height > 0);
     // scale all frames
     for (int i = 0; i < this->length; ++i) {
         this->frames[i].scale(new_width, new_height);
@@ -202,6 +209,7 @@ void StaticCanvas::scale(int new_width, int new_height) {
 }
 
 void StaticCanvas::resize(int new_width, int new_height) {
+    assert(new_width > 0 && new_height > 0);
     // resize all frames
     for (int i = 0; i < this->length; ++i) {
         this->frames[i].resize(new_width, new_height);

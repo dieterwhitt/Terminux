@@ -23,8 +23,10 @@ class Frame {
         vector<vector<char>> data;
     public:
         // constructor 1: creates blank frame
+        // requires: width, height > 0
         Frame(int width, int height);
         // constructor 2: using given data (creates copy)
+        // requires: data vector is non-empty and all rows are equal length
         Frame(vector<vector<char>> data);
 
         // other constructors (for module 2, 3):
@@ -33,6 +35,7 @@ class Frame {
         int get_width() const;
         int get_height() const;
         int is_blank() const;
+
         // returns a const reference (read-only) of data
         const vector<vector<char>> &get_data() const;
 
@@ -40,6 +43,7 @@ class Frame {
         // custom logic if filename not defined: animation{n}.anim (handled in bash)
         // width and height must be defined. if scale is True, it will soft scale,
         // otherwise it will hard scale (cutoff)
+        // requires: frames non empty, all int params > 0
         static void compile(string filename, const vector<Frame> &frames, int width, int height, 
                 bool scale, int framerate = 30, bool loop = false);
 
@@ -60,16 +64,21 @@ class Frame {
 
         // inserts (links) the current frame into an animatable anim_filename
         // by default inserts at the end.
+        // does not scale proportionally to fit: images inserted using resize()
+        // assumes animatable is valid! OVERWRITES the original animatable.
+        // requires: -1 <= posn 
         void insert(string anim_filename, int posn = -1) const;
 
         // scales the frame proportionally to a new resolution (soft scale)
         // create new data vector, then approxtimate the value of each element
         // from the old data vector
+        // requires: int params > 0
         void scale(int new_width, int new_height);
 
         // resizes the frame without any kind of scaling (hard scale)
         // if x/y is larger: fills in with spaces
         // if smaller: crops off
+        // requires: int params > 0
         void resize(int new_width, int new_height);
 };
 

@@ -25,9 +25,11 @@ class StaticCanvas {
     public:
         // constructor with default values outlined in notion
         // creates a blank canvas (all frames are blank)
+        // requires: all params > 0
         StaticCanvas(int width = 64, int height = 64, int length = 10);
 
         // creates a canvas from given frames (creates copy).
+        // requires: frames non-empty
         StaticCanvas(vector<Frame> frames);
 
         // future constructors: creating static canvas from 2d, 3d dynamic canvases
@@ -53,19 +55,23 @@ class StaticCanvas {
         // compilation function with default values
         // compiles static canvas into an animatable file (.anim)
         // custom logic if filename not defined: animation{n}.anim (handled in bash)
+        // requires: framerate > 0
         void compile(string filename, int framerate = 30, bool loop = false) const;
 
         // extends the static canvas by adding blank frames
+        // requires: n > 0
         void extend(int n);
 
         // scales the canvas to a new resolution
         // create new data vector, then approxtimate the value of each element
         // from the old data vector
+        // requires: int params > 0
         void scale(int new_width, int new_height);
 
         // resizes the canvas without any kind of scaling
         // if x/y is larger: fills in with spaces
         // if smaller: crops off
+        // requires: int params > 0
         void resize(int new_width, int new_height);
 };
 

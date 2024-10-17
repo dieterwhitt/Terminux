@@ -1,22 +1,23 @@
 // Frame.cpp
 // 10/15/24
 
-// to do: change from vector matrix to array matrix
-// finish frame.cpp
-// define and assert function + class requirements for module 1
+// finish frame.cpp (png read util)
 
 #include "../include/Frame.h"
 
 #include <string>
 #include <vector>
+#include <array>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 #include <cassert>
 
 using namespace std;
 
 Frame::Frame(int width, int height) {
+    assert(width > 0 && height > 0);
     this->width = width;
     this->height = height;
     this->blank = true;
@@ -32,6 +33,12 @@ Frame::Frame(int width, int height) {
 }
 
 Frame::Frame(vector<vector<char>> data) {
+    assert(!data.empty());
+    assert(!data[0].empty());
+    int size = data[0].size();
+    for (int row = 0; row < data.size(); ++row) {
+        assert(data[row].size() == size);
+    }
     this->height = data.size();
     this->width = data.at(0).size();
     this->blank = false;
@@ -56,6 +63,9 @@ const vector<vector<char>> &Frame::get_data() const {
 
 void Frame::compile(string filename, const vector<Frame> &frames, int width, int height, 
         bool scale, int framerate, bool loop) {
+    assert(!frames.empty());
+    assert(width > 0 && height > 0 && framerate > 0);
+
     ofstream output{filename};
     output << framerate << endl;
     output << frames.size() << endl;
@@ -109,12 +119,50 @@ void Frame::write_frame(string filename) const {
 }
 
 void Frame::insert(string anim_filename, int posn) const {
+    assert(posn >= -1);
+    // read metadata
+    // fps, length, width, height, loop
+    array<int, 5> metadata{};
+    for (int i = 0; i < 5; ++i) {
+        cin >> metadata[i];
+    }
+    // prepare overwrite: turn ifstream into sstream
+    ifstream in_stream{anim_filename};
+    stringstream anim_stream{""};
+    anim_stream << in_stream.rdbuf(); // copies into sstream
+    in_stream.close();
 
+    // prepare write
+    ofstream out_stream{anim_filename};
+    // ignore sstream metadata and write output metadata
+    metadata[1] += 1;
+    int trash;
+    for (int i = 0; i < 5; ++i) {
+        anim_stream >> trash;
+        out_stream << metadata[i] << endl;
+    }
+    // get insert index
+    if (posn == -1 || posn >= metadata[1]) {
+        posn = metadata[1] - 1;
+    }
+    string line;
+    for (int frame = 0; frame < metadata[1]; ++frame) {
+        if (frame == posn) {
+            out_stream << *this << endl;
+            continue; // insert self for this iteration
+        } else {
+            // read lines
+            for (int row = 0; row < metadata[3]; ++row) {
+                getline(anim_stream, line);
+                out_stream << line << endl;
+            }
+        }
+    }
+    out_stream.close();
 }
 
 void Frame::scale(int new_width, int new_height) {
-    assert(new_width > 0);
-    assert(new_height > 0); 
+    assert(new_width > 0 && new_height > 0);
     // to scale a dimension:
     // find scaling factor = l2/l1
     // *integer divide* the NEW tile by this factor to get the corresponding character
@@ -135,6 +183,7 @@ void Frame::scale(int new_width, int new_height) {
 }
 
 void Frame::resize(int new_width, int new_height) {
+    assert(new_width > 0 && new_height > 0);
     // initialize new sized vector filled with spaces
     vector<vector<char>> new_data(new_height, vector<char>(new_width, ' '));
     for (int row = 0; row < this->height; ++row) {
