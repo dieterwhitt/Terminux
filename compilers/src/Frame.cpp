@@ -2,7 +2,8 @@
 // 10/15/24
 
 // to do: change from vector matrix to array matrix
-// define and assert function + class requirements
+// finish frame.cpp
+// define and assert function + class requirements for module 1
 
 #include "../include/Frame.h"
 
@@ -11,6 +12,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <cassert>
 
 using namespace std;
 
@@ -94,7 +96,7 @@ Frame *Frame::read_frame(string filename) {
 }
 
 static Frame *read_frame_png(string png_file, string out_file) {
-    
+    return nullptr;
 }
 
 void Frame::write_frame(string filename) const {
@@ -111,7 +113,25 @@ void Frame::insert(string anim_filename, int posn) const {
 }
 
 void Frame::scale(int new_width, int new_height) {
-
+    assert(new_width > 0);
+    assert(new_height > 0); 
+    // to scale a dimension:
+    // find scaling factor = l2/l1
+    // *integer divide* the NEW tile by this factor to get the corresponding character
+    // in the OLD matrix.
+    vector<vector<char>> new_data(new_height, vector<char>(new_width, ' '));
+    int old_row = 0;
+    int old_col = 0;
+    for (int row = 0; row < new_height; ++row) {
+        for (int col = 0; col < new_width; ++col) {
+            old_row = (row * this->height) / new_height;
+            old_col = (col * this->width) / new_width;
+            new_data[row][col] = this->data[old_row][old_col];
+        }
+    }
+    this->width = new_width;
+    this->height = new_height;
+    this->data = new_data;
 }
 
 void Frame::resize(int new_width, int new_height) {

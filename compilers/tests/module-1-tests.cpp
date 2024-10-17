@@ -7,6 +7,7 @@
 #include <exception>
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -54,7 +55,53 @@ void test_util_get_section() {
     cout << "ASSERTIONS PASSED: test_util_get_section()" << endl;
 }
 
+void test_scale_resize() {
+    vector<vector<char>> sample{{'a', 'b', 'c'}, {'d', 'e', 'f'}};
+    Frame f1{sample};
+    f1.scale(6, 4);
+    ostringstream temp{};
+    temp << f1;
+    assert(temp.str() == "aabbcc\naabbcc\nddeeff\nddeeff");
+
+    Frame f2{sample};
+    f2.scale(2, 3);
+    temp.str(""); // clears
+    temp << f2;
+    assert(temp.str() == "ab\nab\nde");
+
+    vector<vector<char>> sample2{{'a', 'b', 'c', 'd'}, {'e', 'f', 'g', 'h'},
+            {'i', 'j', 'k', 'l'}};
+    Frame f3{sample2};
+    f3.scale(6, 7);
+    temp.str("");
+    temp << f3;
+    assert(temp.str() == 
+    "aabccd\n"
+    "aabccd\n"
+    "aabccd\n"
+    "eefggh\n"
+    "eefggh\n"
+    "iijkkl\n"
+    "iijkkl"
+    );
+
+    Frame f4{sample2};
+    f4.resize(3, 2);
+    temp.str("");
+    temp << f4;
+    assert(temp.str() == "abc\nefg");
+
+    Frame f5{sample2};
+    f5.resize(6, 6);
+    temp.str("");
+    temp << f5;
+    assert(temp.str() == "abcd  \nefgh  \nijkl  \n      \n      \n      ");
+
+    cout << "ASSERTIONS PASSED: FRAME SCALE AND RESIZE" << endl;
+}
+
 int main(int argc, char** argv) {
-    test_util_get_section();
-    compile_and_copy();
+    // test_util_get_section();
+    // compile_and_copy();
+    test_scale_resize();
 }
