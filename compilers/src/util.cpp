@@ -8,6 +8,14 @@
 
 using namespace std;
 
+// default init to white
+struct rgba {
+    int r = 255;
+    int g = 255;
+    int b = 255;
+    int a = 255;
+};
+
 string get_section(string filename, string label) {
     // read line by line and put the line in a istringstream
     // read word by word from that. once section begin is detected,

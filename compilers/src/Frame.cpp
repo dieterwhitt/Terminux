@@ -105,7 +105,7 @@ Frame *Frame::read_frame(string filename) {
     return result;
 }
 
-static Frame *read_frame_png(string png_file, string out_file) {
+static Frame *read_frame_png(string png_file, string out_file, BrightnessVector &bv) {
     return nullptr;
 }
 

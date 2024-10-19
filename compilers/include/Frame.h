@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include "BrightnessVector.h"
 
 using namespace std;
 
@@ -57,7 +58,8 @@ class Frame {
         // read function that attempts to read a .png
         // returns a pointer to a heap-allocated frame object with the given data
         // throws runtime exception if invalid.
-        static Frame *read_frame_png(string png_file, string out_file);
+        // needs brightness vector class too.
+        static Frame *read_frame_png(string png_file, string out_file, BrightnessVector &bv);
 
         // writes a representation of the frame (.frame)
         void write_frame(string filename) const;
