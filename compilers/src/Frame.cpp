@@ -16,12 +16,8 @@
 
 using namespace std;
 
-Frame::Frame(int width, int height) {
+Frame::Frame(int width, int height) : width{width}, height{height}, blank{true}, data{} {
     assert(width > 0 && height > 0);
-    this->width = width;
-    this->height = height;
-    this->blank = true;
-    this->data = vector<vector<char>>{}; // explicitly declare empty 2d vector
     // blank frame: fill data array with space characters
     for (int row = 0; row < height; ++row) {
         vector<char> rvec{};
@@ -32,7 +28,7 @@ Frame::Frame(int width, int height) {
     }
 }
 
-Frame::Frame(vector<vector<char>> data) {
+Frame::Frame(vector<vector<char>> &data) {
     assert(!data.empty());
     assert(!data[0].empty());
     int size = data[0].size();
@@ -42,7 +38,7 @@ Frame::Frame(vector<vector<char>> data) {
     this->height = data.size();
     this->width = data.at(0).size();
     this->blank = false;
-    this->data = data;
+    this->data = data; // assignment operator creates copy
 }
 
 int Frame::get_width() const {

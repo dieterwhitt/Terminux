@@ -15,12 +15,9 @@
 
 using namespace std;
 
-StaticCanvas::StaticCanvas(int width, int height, int length) {
+StaticCanvas::StaticCanvas(int width, int height, int length) : width{width}, 
+        height{height}, length{length}, frames{} {
     assert(width > 0 && height > 0 && length > 0);
-    this->width = width;
-    this->height = height;
-    this->length = length;
-    this->frames = {};
     // fill vector with blank frames
     for (int i = 0; i < length; ++i) {
         Frame blank{width, height};
@@ -28,9 +25,9 @@ StaticCanvas::StaticCanvas(int width, int height, int length) {
     }
 }
 
-StaticCanvas::StaticCanvas(vector<Frame> frames) {
+StaticCanvas::StaticCanvas(vector<Frame> &frames) {
     assert(!frames.empty());
-    this->frames = frames;
+    this->frames = frames; // assignment operator creates copy
     this->width = frames[0].get_width();
     this->height = frames[0].get_height();
     this->length = frames.size();
