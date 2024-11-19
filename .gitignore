@@ -3,4 +3,6 @@
 practice/
 *.o
 *.out
+*.stcan
+build/
 bin/

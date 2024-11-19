@@ -14,6 +14,10 @@
 #include <stdexcept>
 #include <cassert>
 
+// dependency: libpng
+// brew install libpng (when we use makefile, put that shit in)
+#include <png.h>
+
 using namespace std;
 
 Frame::Frame(int width, int height) : width{width}, height{height}, blank{true}, data{} {
@@ -102,6 +106,8 @@ Frame *Frame::read_frame(string filename) {
 }
 
 static Frame *read_frame_png(string png_file, string out_file, BrightnessVector &bv) {
+    // use libpng chat
+
     return nullptr;
 }
 
