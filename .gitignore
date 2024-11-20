@@ -4,5 +4,6 @@ practice/
 *.o
 *.out
 *.stcan
+*.d
 build/
 bin/

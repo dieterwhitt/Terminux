@@ -4,20 +4,26 @@
 #include <string>
 #include <cmath>
 #include <cassert>
+#include <iostream>
 
 BrightnessVector::BrightnessVector(string data) : data{data} {
     assert(data.length() > 0);
 }
 
-
-
 char BrightnessVector::convert_luminance(float luminance) const {
-    assert(0 <= luminance && luminance <= 255);
+    const int tolerance = 0.000001;
+    assert(0 - tolerance <= luminance && luminance <= 255 + tolerance);
+    // floating point precision errors: cap in range 0, 255
+    if (luminance < 0) luminance = 0.0f;
+    else if (luminance >= 255) luminance = 255.0f;
     // based on the length of the brightness vector l, partition into l segments.
     float l = this->data.length();
     float segment_size = 1 / l;
     // number of segments surpassed is the index to choose
-    return this->data[(int) fmodf(luminance / 255, segment_size)];
+    int index = (int) (luminance / (255 * segment_size));
+    // edge case: passed all segments (l = 255)
+    if (index == l) --index;
+    return this->data[index];
 }
 
 // L = 0.2126 * R + 0.7152 * G + 0.0722 * B

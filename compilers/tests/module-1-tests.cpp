@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -103,7 +104,18 @@ void test_scale_resize() {
 }
 
 void test_bv() {
-    BrightnessVector bv{""};
+    BrightnessVector bv{" .:-=+*#%@"};
+    // testing luminance
+    assert(bv.convert_luminance(0.0f) == ' ');
+    assert(bv.convert_luminance(255.0f) == '@');
+    assert(bv.convert_luminance(249.9f) == '@');
+    assert(bv.convert_luminance(229.5f) == '@');
+    assert(bv.convert_luminance(229.6f) == '@');
+    assert(bv.convert_luminance(229.4f) == '%');
+    assert(bv.convert_luminance(127.5f) == '+');
+    assert(bv.convert_luminance(127.0f) == '=');
+
+    cout << "ASSERTIONS PASSED: test_bv()" << endl;
 }
 
 void test_png_frame() {
@@ -111,7 +123,6 @@ void test_png_frame() {
 }
 
 int main(int argc, char** argv) {
-    // test_util_get_section();
-    // compile_and_copy();
-    test_scale_resize();
+    test_bv();
+    test_png_frame();
 }
