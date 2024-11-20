@@ -11,19 +11,19 @@
 // small string wrapper that represents a brightness scale using characters
 class BrightnessVector {
     private:
-        string data;
+        std::string data;
     public:
         // constructs a brightness vector using given data (copy)
-        BrightnessVector(string data);
+        BrightnessVector(std::string data);
         
         // reads a brightnessvector file .bv and returns a pointer to a heap allocated
         // brightness vector. default param = default bv filepath
-        static BrightnessVector *read_bv(string filename);
+        static BrightnessVector *read_bv(std::string filename);
 
-        string get_data();
+        std::string get_data();
 
         // writes to a .bv file
-        void write_bv(string filename) const;
+        void write_bv(std::string filename) const;
 
         // all conversions below should be O(1)
 

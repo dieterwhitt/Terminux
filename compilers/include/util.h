@@ -14,6 +14,6 @@ struct rgba;
 // gets a specific section in a document (whitespace included)
 // from \section{label} to \end{label}. returns string
 // throws runtime exception if the tags aren't found
-string get_section(string filename, string label);
+std::string get_section(std::string filename, std::string label);
 
 #endif

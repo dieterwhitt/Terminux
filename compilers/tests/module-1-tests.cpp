@@ -14,7 +14,7 @@
 
 using namespace std;
 
-// still have to test read stcan
+// run executable from /compilers/
 
 void create() {
     // test: create a blank canvas of width 40 height 6
@@ -25,7 +25,7 @@ void create() {
 void compile_and_copy() {
     try {
         // test: compile terminux/examples/giveup.stcan
-        StaticCanvas *giveup = StaticCanvas::read_stcan("../../examples/giveup.stcan");
+        StaticCanvas *giveup = StaticCanvas::read_stcan("../examples/giveup.stcan");
         giveup->compile("giveup.anim", 20);
         giveup->write_stcan("giveup_copy.anim");
         delete giveup;
@@ -35,13 +35,13 @@ void compile_and_copy() {
 }
 
 void test_util_get_section() {
-    string metadata = get_section("../../examples/giveup.stcan", "metadata");
+    string metadata = get_section("../examples/giveup.stcan", "metadata");
     assert(metadata == 
     "Frame Width: 40\n"
     "Frame Height: 6\n"
     "Number of Frames: 16\n");
 
-    string comments = get_section("../../examples/giveup.stcan", "comments");
+    string comments = get_section("../examples/giveup.stcan", "comments");
     assert(comments == 
     "\n"
     "Static Canvas: giveup.stcan\n"
@@ -130,11 +130,24 @@ void test_bv() {
     cout << "ASSERTIONS PASSED: test_bv()" << endl;
 }
 
-void test_png_frame() {
+void test_frame_io() {
+    Frame *f = Frame::read_frame("../examples/testframe.frame");
+    f->write_frame("testframe-write.frame");
+    delete f;
+    cout << "TESTED FRAME READ/WRITE, CHECK OUTPUT" << endl;
+}
 
+void test_png_frame() {
+    BrightnessVector bv{" .:-=+*>#%@"};
+    Frame *f = Frame::read_png("../examples/misato.png", bv);
+    f->scale_factor(0.2f);
+    f->write_frame("../examples/misato.frame");
+    delete f;
+    cout << "TESTED FRAME READ PNG, CHECK OUTPUT" << endl;
 }
 
 int main(int argc, char** argv) {
-    test_bv();
+    // test_bv();
+    // test_frame_io();
     test_png_frame();
 }

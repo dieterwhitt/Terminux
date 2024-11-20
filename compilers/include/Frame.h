@@ -58,7 +58,7 @@ class Frame {
         // (caller must free)
         // throws runtime exception if invalid.
         // needs brightness vector class too.
-        static Frame *read_frame_png(std::string png_file, std::string out_file, BrightnessVector &bv);
+        static Frame *read_png(std::string png_file, BrightnessVector &bv);
 
         // writes a representation of the frame (.frame)
         void write_frame(std::string filename) const;
@@ -76,6 +76,9 @@ class Frame {
         // requires: int params > 0
         void scale(int new_width, int new_height);
 
+        // scales by a factor while maintining the aspect ratio of the frame
+        void scale_factor(float factor);
+
         // resizes the frame without any kind of scaling (hard scale)
         // if x/y is larger: fills in with spaces
         // if smaller: crops off
@@ -85,6 +88,6 @@ class Frame {
 
 // overload printing to print frames (only data matrix is printed)
 // does NOT end with a newline.
-ostream &operator<<(ostream &os, const Frame &f);
+std::ostream &operator<<(std::ostream &os, const Frame &f);
 
 #endif
