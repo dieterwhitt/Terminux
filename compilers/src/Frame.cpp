@@ -169,19 +169,15 @@ Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
     png_read_update_info(pngptr, pnginfo);
 
     // begin full read
-    // png_bytepp rows = new png_bytep[height];
     // allocate memory for rows: a pointer to an array of pointers
     png_bytepp rows = new png_bytep[height];
 
     // allocate memory for each row
     for (int i = 0; i < height; ++i) {
-        rows[i] = new png_byte[width * 4];  // 4 channels: rbga
+        rows[i] = new png_byte[width * 4];  // 4 channels: rgba
     }
 
     png_read_image(pngptr, rows);
-
-    // get rows
-    // png_bytepp rows = png_get_rows(pngptr, pnginfo);
 
     vector<vector<char>> data(height, vector<char>(width, ' '));
     for (int row = 0; row < height; ++row) {

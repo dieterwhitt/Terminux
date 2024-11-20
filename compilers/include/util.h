@@ -16,4 +16,12 @@ struct rgba;
 // throws runtime exception if the tags aren't found
 std::string get_section(std::string filename, std::string label);
 
+// removes comments from text.
+// a line beginning with '#' is a comment.
+std::string strip_comments(std::string content);
+
+// removes whitespace lines from text.
+// a whitespace line is a line containing only whitespace.
+std::string strip_white_lines(std::string content);
+
 #endif
