@@ -14,6 +14,8 @@
 
 using namespace std;
 
+// still have to test read stcan
+
 void create() {
     // test: create a blank canvas of width 40 height 6
     StaticCanvas my_canvas(40, 6, 16);

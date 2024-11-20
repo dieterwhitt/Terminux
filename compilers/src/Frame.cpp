@@ -105,18 +105,51 @@ Frame *Frame::read_frame(string filename) {
 }
 
 static Frame *read_frame_png(string png_file, string out_file, BrightnessVector &bv) {
-    // so were using libpng?
+    // so we're using libpng?
     // it's a c library so use c syntax
+    // guide: https://jeromebelleman.gitlab.io/posts/devops/libpng/#rgb
     FILE *fp = fopen(png_file.c_str(), "r");
     // initialize png reading structures
     png_structp pngptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     png_infop pnginfo = png_create_info_struct(pngptr);
-    // convert color indexing to rbg
+    // basic error handling
+    if (!pngptr || !pnginfo) {
+        png_destroy_read_struct(&pngptr, &pnginfo, NULL);
+        return nullptr;
+    }
+    
+    // convert color indexing/grayscale to rbg
     png_set_palette_to_rgb(pngptr);
+    png_set_gray_to_rgb(pngptr);
+
     // begin read
     png_init_io(pngptr, fp);
+    png_read_png(pngptr, pnginfo, PNG_TRANSFORM_IDENTITY, NULL);
+    // get rows
+    png_bytepp rows = png_get_rows(pngptr, pnginfo);
+    // can finally convert to frame
+    int height = png_get_image_height(pngptr, pnginfo);
+    int width = png_get_image_width(pngptr, pnginfo); // in pixels
+    vector<vector<char>> data(height, vector<char>(width, ' '));
+    
+    // before reading, add opaque alpha channel if it doesn't have one yet
+    if (png_get_color_type(pngptr, pnginfo) == PNG_COLOR_TYPE_RGB) {
+        png_set_add_alpha(pngptr, 0xff, PNG_FILLER_AFTER); // add after rbg: rbga
+    }
 
-    return nullptr;
+
+    for (int row = 0; row < height; ++row) {
+        for (int col = 0; col < width * 4; col += 4) {
+            data[row][col] = bv.convert_rgba(
+                    rows[row][col], 
+                    rows[row][col + 1], 
+                    rows[row][col + 2],
+                    rows[row][col + 3]);
+        }
+    }
+    // free stuff
+    png_destroy_read_struct(&pngptr, &pnginfo, NULL);
+    return new Frame{data};
 }
 
 void Frame::write_frame(string filename) const {

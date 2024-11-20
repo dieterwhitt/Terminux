@@ -48,13 +48,14 @@ class Frame {
 
         // read function that attempts to read a .frame file
         // returns a pointer to a heap-allocated frame object with the given data
-        // (caller must destruct)
+        // (caller must free)
         // must be compatible with Frame.print_frame().
         // throws runtime exception if invalid.
         static Frame *read_frame(std::string filename);
 
         // read function that attempts to read a .png
         // returns a pointer to a heap-allocated frame object with the given data
+        // (caller must free)
         // throws runtime exception if invalid.
         // needs brightness vector class too.
         static Frame *read_frame_png(std::string png_file, std::string out_file, BrightnessVector &bv);

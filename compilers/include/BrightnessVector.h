@@ -13,7 +13,7 @@ class BrightnessVector {
     private:
         string data;
     public:
-        // constructs a brightness vector using given data
+        // constructs a brightness vector using given data (copy)
         BrightnessVector(string data);
         
         // reads a brightnessvector file .bv and returns a pointer to a heap allocated
@@ -27,7 +27,7 @@ class BrightnessVector {
 
         // all conversions below should be O(1)
 
-        // converts a luminance (0 <= l <= 1) to a character
+        // converts a luminance (0 <= l <= 255) to a character
         // the first character (background, usually ' ') is reserved for l = 0 only! 
         char convert_luminance(float luminance) const;
 
