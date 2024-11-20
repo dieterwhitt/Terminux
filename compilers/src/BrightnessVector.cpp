@@ -7,33 +7,33 @@
 #include <iostream>
 
 BrightnessVector::BrightnessVector(string data) : data{data} {
-    assert(data.length() > 0);
+    assert(data.length() > 1);
 }
 
 char BrightnessVector::convert_luminance(float luminance) const {
     const int tolerance = 0.000001;
     assert(0 - tolerance <= luminance && luminance <= 255 + tolerance);
-    // floating point precision errors: cap in range 0, 255
-    if (luminance < 0) luminance = 0.0f;
-    else if (luminance >= 255) luminance = 255.0f;
-    // based on the length of the brightness vector l, partition into l segments.
-    float l = this->data.length();
-    float segment_size = 1 / l;
+
+    // edge case: first char in vector for l = 0
+    if (0 - tolerance <= luminance && luminance <= tolerance) return this->data[0];
+
+    // based on the length of the brightness vector l, partition into l-1 segments.
+    float segment_size = 1.0 / (this->data.length() - 1);
     // number of segments surpassed is the index to choose
-    int index = (int) (luminance / (255 * segment_size));
-    // edge case: passed all segments (l = 255)
-    if (index == l) --index;
+    int index = (int) (luminance / (255 * segment_size)) + 1;
+    // edge case: passed all segments (l >= 255)
+    if (index == this->data.length()) --index;
     return this->data[index];
 }
 
-// L = 0.2126 * R + 0.7152 * G + 0.0722 * B
-char BrightnessVector::convert_rbga(int red, int blue, int green, int alpha) const {
+// L = 0.2126R + 0.7152G + 0.0722B
+char BrightnessVector::convert_rgba(int red, int green, int blue, int alpha) const {
     // use luminance * alpha (normalized)
     return convert_luminance((alpha / 255.0f) * (0.2126f * red + 0.7152f * green + 0.0722f * blue));
 }
 
-char BrightnessVector::convert_rbg(int red, int blue, int green) const {
-    return convert_rbga(red, blue, green, 255);
+char BrightnessVector::convert_rgb(int red, int green, int blue) const {
+    return convert_rgba(red, green, blue, 255);
 }
 
 char BrightnessVector::convert_hex(int hex) const {
@@ -43,7 +43,7 @@ char BrightnessVector::convert_hex(int hex) const {
     int red = (hex >> 16) & 0xFF; // right shift 2 bytes
     int green = (hex >> 8) & 0xFF; // right shift a byte
     int blue = hex & 0xFF;
-    return convert_rbg(red, green, blue);
+    return convert_rgb(red, green, blue);
 }
 
 

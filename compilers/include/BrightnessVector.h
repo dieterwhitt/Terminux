@@ -30,13 +30,14 @@ class BrightnessVector {
         // all conversions below should be O(1)
 
         // converts a luminance (0 <= l <= 1) to a character
+        // the first character (background, usually ' ') is reserved for l = 0 only! 
         char convert_luminance(float luminance) const;
 
         // converts rbga values to a character
-        char convert_rbga(int red, int blue, int green, int alpha) const;
+        char convert_rgba(int red, int green, int blue, int alpha) const;
 
         // converts rbg values to a character
-        char convert_rbg(int red, int blue, int green) const;
+        char convert_rgb(int red, int green, int blue) const;
 
         // converts hex values to a character
         char convert_hex(int hex) const ;

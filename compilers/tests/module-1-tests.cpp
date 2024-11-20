@@ -104,16 +104,26 @@ void test_scale_resize() {
 }
 
 void test_bv() {
-    BrightnessVector bv{" .:-=+*#%@"};
+    BrightnessVector bv{" .:-=+*>#%@"};
     // testing luminance
     assert(bv.convert_luminance(0.0f) == ' ');
+    assert(bv.convert_luminance(0.1f) == '.');
     assert(bv.convert_luminance(255.0f) == '@');
     assert(bv.convert_luminance(249.9f) == '@');
     assert(bv.convert_luminance(229.5f) == '@');
     assert(bv.convert_luminance(229.6f) == '@');
     assert(bv.convert_luminance(229.4f) == '%');
-    assert(bv.convert_luminance(127.5f) == '+');
-    assert(bv.convert_luminance(127.0f) == '=');
+    assert(bv.convert_luminance(127.5f) == '*');
+    assert(bv.convert_luminance(127.0f) == '+');
+
+    // testing rgba
+    assert(bv.convert_rgba(255, 255, 255, 255) == '@');
+    assert(bv.convert_rgba(255, 255, 255, 0) == ' ');
+    assert(bv.convert_rgba(0, 0, 0, 255) == ' ');
+    assert(bv.convert_rgba(255, 255, 255, 127) == '+');
+    assert(bv.convert_rgba(255, 0, 0, 255) == '-');
+    assert(bv.convert_rgba(0, 255, 0, 255) == '#');
+    assert(bv.convert_rgba(0, 0, 255, 255) == '.');
 
     cout << "ASSERTIONS PASSED: test_bv()" << endl;
 }
