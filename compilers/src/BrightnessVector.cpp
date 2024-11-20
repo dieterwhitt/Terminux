@@ -48,6 +48,7 @@ char BrightnessVector::convert_luminance(float luminance) const {
 }
 
 // L = 0.2126R + 0.7152G + 0.0722B
+// standard luminance conversion
 char BrightnessVector::convert_rgba(int red, int green, int blue, int alpha) const {
     // use luminance * alpha (normalized)
     return convert_luminance((alpha / 255.0f) * (0.2126f * red + 0.7152f * green + 0.0722f * blue));

@@ -110,10 +110,23 @@ Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
     // it's a c library so use c syntax
     // guide: https://jeromebelleman.gitlab.io/posts/devops/libpng/#rgb
     FILE *fp = fopen(png_file.c_str(), "rb");
+
+    // basic error handling
+    if (!fp) return nullptr;
+    // read the header
+    png_byte header[8];
+    fread(header, 1, 8, fp);
+    // test if png
+    int is_png = !png_sig_cmp(header, 0, 8);
+    if (!is_png) {
+        fclose(fp);
+        return nullptr;
+    }
+
     // initialize png reading structures
     png_structp pngptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     png_infop pnginfo = png_create_info_struct(pngptr);
-    // basic error handling
+    // more error handling
     if (!pngptr || !pnginfo) {
         png_destroy_read_struct(&pngptr, &pnginfo, NULL);
         return nullptr;
@@ -121,6 +134,10 @@ Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
 
     // initialize stream
     png_init_io(pngptr, fp);
+
+    // let libpng know you already read the first 8 bytes
+    png_set_sig_bytes(pngptr, 8);
+
     // read metadata to preprocess image and prepare it for conversion 
     // (low level read interface)
     png_read_info(pngptr, pnginfo);
@@ -140,19 +157,16 @@ Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
     if (depth == 16)
         png_set_strip_16(pngptr);
 
-    cout << width << " " << height << " " << depth << endl;
-    cout << "RGB? " << (color_type == PNG_COLOR_TYPE_RGB) << endl;
+    // cout << width << " " << height << " " << depth << endl;
+    // cout << "RGB? " << (color_type == PNG_COLOR_TYPE_RGB) << endl;
 
     // before reading, add opaque alpha channel if it doesn't have one yet
     if (color_type == PNG_COLOR_TYPE_RGB) {
-        png_set_add_alpha(pngptr, 0xff, PNG_FILLER_AFTER); // add after rbg: rbga
+        png_set_add_alpha(pngptr, 0xff, PNG_FILLER_AFTER); // add after rbg: rgba
     }
 
     // last step: save input transformations before reading data
-    cout << "SAVING" << endl;
     png_read_update_info(pngptr, pnginfo);
-    
-    cout << "READING" << endl;
 
     // begin full read
     // png_bytepp rows = new png_bytep[height];
@@ -170,13 +184,14 @@ Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
     // png_bytepp rows = png_get_rows(pngptr, pnginfo);
 
     vector<vector<char>> data(height, vector<char>(width, ' '));
-    cout << "STARTING LOOP" << endl;
     for (int row = 0; row < height; ++row) {
         for (int col = 0; col < width * 4; col += 4) {
+            /*
             cout << "PIXEL " << row << " " << col/4 << ", RGBA: " << (int)rows[row][col] << " "
                     << (int)rows[row][col + 1] << " " << (int)rows[row][col + 2] << " "
                     << (int)rows[row][col + 3] << " "
                     << endl;
+                    */
             data[row][col / 4] = bv.convert_rgba(
                     rows[row][col], 
                     rows[row][col + 1], 
