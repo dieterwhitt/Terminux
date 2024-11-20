@@ -119,11 +119,12 @@ Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
         return nullptr;
     }
 
-
     // initialize stream
     png_init_io(pngptr, fp);
-    // read metadata to preprocess image and prepare it for conversion
+    // read metadata to preprocess image and prepare it for conversion 
+    // (low level read interface)
     png_read_info(pngptr, pnginfo);
+    // query info structure
     int height = png_get_image_height(pngptr, pnginfo);
     int width = png_get_image_width(pngptr, pnginfo); // in pixels
     int depth = png_get_bit_depth(pngptr, pnginfo);
@@ -134,25 +135,39 @@ Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
     else if (color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
         png_set_gray_to_rgb(pngptr);
     }
+
     // hard set depth to 8 for proper reading.
     if (depth == 16)
         png_set_strip_16(pngptr);
 
     cout << width << " " << height << " " << depth << endl;
+    cout << "RGB? " << (color_type == PNG_COLOR_TYPE_RGB) << endl;
 
     // before reading, add opaque alpha channel if it doesn't have one yet
     if (color_type == PNG_COLOR_TYPE_RGB) {
         png_set_add_alpha(pngptr, 0xff, PNG_FILLER_AFTER); // add after rbg: rbga
     }
 
-    // last step: save transformations before beginning full read
+    // last step: save input transformations before reading data
+    cout << "SAVING" << endl;
     png_read_update_info(pngptr, pnginfo);
-    png_read_png(pngptr, pnginfo, PNG_TRANSFORM_IDENTITY, NULL);
+    
+    cout << "READING" << endl;
 
     // begin full read
-    // png_read_png(pngptr, pnginfo, PNG_TRANSFORM_IDENTITY, NULL);
+    // png_bytepp rows = new png_bytep[height];
+    // allocate memory for rows: a pointer to an array of pointers
+    png_bytepp rows = new png_bytep[height];
+
+    // allocate memory for each row
+    for (int i = 0; i < height; ++i) {
+        rows[i] = new png_byte[width * 4];  // 4 channels: rbga
+    }
+
+    png_read_image(pngptr, rows);
+
     // get rows
-    png_bytepp rows = png_get_rows(pngptr, pnginfo);
+    // png_bytepp rows = png_get_rows(pngptr, pnginfo);
 
     vector<vector<char>> data(height, vector<char>(width, ' '));
     cout << "STARTING LOOP" << endl;
@@ -171,6 +186,11 @@ Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
     }
     // free stuff
     png_destroy_read_struct(&pngptr, &pnginfo, NULL);
+    for (int i = 0; i < height; ++i) {
+        delete[] rows[i];  // free memory for each row
+    }
+    delete[] rows;  // free the array of row pointers
+    
     return new Frame{data};
 }
 
