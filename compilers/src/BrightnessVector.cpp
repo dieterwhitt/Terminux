@@ -5,9 +5,30 @@
 #include <cmath>
 #include <cassert>
 #include <iostream>
+#include <fstream>
+
+using namespace std;
 
 BrightnessVector::BrightnessVector(string data) : data{data} {
     assert(data.length() > 1);
+}
+
+BrightnessVector *BrightnessVector::read_bv(string filename) {
+    ifstream file{filename};
+    string data;
+    getline(file, data);
+    file.close();
+    return new BrightnessVector{data};
+}
+
+string BrightnessVector::get_data() {
+    return this->data;
+}
+
+void BrightnessVector::write_bv(string filename) const {
+    ofstream file{filename};
+    file << this->data << endl;
+    file.close();
 }
 
 char BrightnessVector::convert_luminance(float luminance) const {

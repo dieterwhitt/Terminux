@@ -6,8 +6,6 @@
 
 #include <string>
 
-using namespace std;
-
 // utilities (structs, helper functions, etc.)
 
 // a single rgba pixel (red, green, blue, alpha) /255

@@ -8,8 +8,6 @@
 #include <string>
 #include "util.h"
 
-using namespace std;
-
 // small string wrapper that represents a brightness scale using characters
 class BrightnessVector {
     private:
