@@ -32,7 +32,7 @@ Frame::Frame(int width, int height) : width{width}, height{height}, blank{true},
     }
 }
 
-Frame::Frame(vector<vector<char>> &data) {
+Frame::Frame(vector<vector<char>> &data) : data{data} {
     assert(!data.empty());
     assert(!data[0].empty());
     int size = data[0].size();
@@ -42,7 +42,6 @@ Frame::Frame(vector<vector<char>> &data) {
     this->height = data.size();
     this->width = data.at(0).size();
     this->blank = false;
-    this->data = data; // assignment operator creates copy
 }
 
 int Frame::get_width() const {
@@ -106,7 +105,16 @@ Frame *Frame::read_frame(string filename) {
 }
 
 static Frame *read_frame_png(string png_file, string out_file, BrightnessVector &bv) {
-    // use libpng chat
+    // so were using libpng?
+    // it's a c library so use c syntax
+    FILE *fp = fopen(png_file.c_str(), "r");
+    // initialize png reading structures
+    png_structp pngptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    png_infop pnginfo = png_create_info_struct(pngptr);
+    // convert color indexing to rbg
+    png_set_palette_to_rgb(pngptr);
+    // begin read
+    png_init_io(pngptr, fp);
 
     return nullptr;
 }

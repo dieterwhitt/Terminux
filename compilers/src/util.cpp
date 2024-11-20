@@ -9,6 +9,7 @@
 using namespace std;
 
 // default init to white
+// might not actually need this 
 struct rgba {
     int r = 255;
     int g = 255;

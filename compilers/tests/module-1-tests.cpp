@@ -3,6 +3,8 @@
 
 #include "../include/StaticCanvas.h"
 #include "../include/util.h"
+#include "../include/BrightnessVector.h"
+#include "../include/Frame.h"
 #include <cassert>
 #include <exception>
 #include <stdexcept>
@@ -98,6 +100,14 @@ void test_scale_resize() {
     assert(temp.str() == "abcd  \nefgh  \nijkl  \n      \n      \n      ");
 
     cout << "ASSERTIONS PASSED: FRAME SCALE AND RESIZE" << endl;
+}
+
+void test_bv() {
+    BrightnessVector bv{""};
+}
+
+void test_png_frame() {
+
 }
 
 int main(int argc, char** argv) {

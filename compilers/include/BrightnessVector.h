@@ -25,21 +25,21 @@ class BrightnessVector {
         string get_data();
 
         // writes to a .bv file
-        void write_bv(string filename);
+        void write_bv(string filename) const;
 
         // all conversions below should be O(1)
 
         // converts a luminance (0 <= l <= 1) to a character
-        char convert_luminance(float luminance);
+        char convert_luminance(float luminance) const;
 
         // converts rbga values to a character
-        char convert_rbga(int red, int blue, int green, int alpha);
+        char convert_rbga(int red, int blue, int green, int alpha) const;
 
         // converts rbg values to a character
-        char convert_rbg(int red, int blue, int green);
+        char convert_rbg(int red, int blue, int green) const;
 
         // converts hex values to a character
-        char convert_hex(int hex);
+        char convert_hex(int hex) const ;
 };
 
 #endif

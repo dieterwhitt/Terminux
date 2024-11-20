@@ -25,9 +25,8 @@ StaticCanvas::StaticCanvas(int width, int height, int length) : width{width},
     }
 }
 
-StaticCanvas::StaticCanvas(vector<Frame> &frames) {
+StaticCanvas::StaticCanvas(vector<Frame> &frames) : frames{frames} {
     assert(!frames.empty());
-    this->frames = frames; // assignment operator creates copy
     this->width = frames[0].get_width();
     this->height = frames[0].get_height();
     this->length = frames.size();
