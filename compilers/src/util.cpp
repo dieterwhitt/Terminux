@@ -5,6 +5,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
@@ -51,4 +52,33 @@ string get_section(string filename, string label) {
     }
     file.close();
     return output.str();
+}
+
+std::pair<int, int> determine_scaling(int target_x, int target_y, float s = 0.0f, 
+        int x = 0, int y = 0) {
+    assert(s >= 0 && x >= 0 && y >= 0);
+    // s takes precedent: check first
+    if (s > 0) {
+        int out_x = (int) (target_x * s);
+        int out_y = (int) (target_y * s);
+        if (out_x == 0) ++out_x;
+        if (out_y == 0) ++out_y;
+        return pair{out_x, out_y};
+    } else if (x > 0 && y > 0) {
+        // x and y both defined.
+        return pair{x, y};
+    } else if (x > 0) {
+        // only x defined
+        float ratio = ((float) (x)) / ((float) (target_x));
+        int out_y = (int) (ratio * target_y);
+        return pair{x, out_y};
+    } else if (y > 0) {
+        // only y defined
+        float ratio = ((float) (y)) / ((float) (target_y));
+        int out_x = (int) (ratio * target_x);
+        return pair{out_x, y};
+    } else {
+        // neither defined. don't scale
+        return pair{target_x, target_y};
+    }
 }

@@ -61,6 +61,8 @@ const vector<vector<char>> &Frame::get_data() const {
     return this->data;
 }
 
+// todo: add scaling and resizing in accordance with notion: terminux frame
+
 void Frame::compile(string filename, const vector<Frame> &frames, int width, int height, 
         bool scale, int framerate, bool loop) {
     assert(!frames.empty());
@@ -105,6 +107,7 @@ Frame *Frame::read_frame(string filename) {
     return result;
 }
 
+// opencv is probably easier but idgaf learning is more fun
 Frame *Frame::read_png(string png_file, BrightnessVector &bv) {
     // so we're using libpng?
     // it's a c library so use c syntax

@@ -24,4 +24,13 @@ std::string strip_comments(std::string content);
 // a whitespace line is a line containing only whitespace.
 std::string strip_white_lines(std::string content);
 
+// finds the scale resolution when parsing -x, -y, -s flags based on a 
+// target's resolution, according to the behaviour outlined in notion:
+// s - scale factor
+// x - scaled x
+// y - scaled y
+// outputs a pair {x, y}
+std::pair<int, int> determine_scaling(int target_x, int target_y, float s = 0.0f, 
+        int x = 0, int y = 0);
+
 #endif
