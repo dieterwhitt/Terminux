@@ -5,6 +5,7 @@
 #define UTIL_H
 
 #include <string>
+#include "BrightnessVector.h"
 
 // utilities (structs, helper functions, etc.)
 
@@ -29,8 +30,20 @@ std::string strip_white_lines(std::string content);
 // s - scale factor
 // x - scaled x
 // y - scaled y
+// if s is provided, scale by a factor. if only x or y are provided, set and scale accordingly.
+// if none are provided, just use the target's existing resolution
 // outputs a pair {x, y}
 std::pair<int, int> determine_scaling(int target_x, int target_y, float s = 0.0f, 
         int x = 0, int y = 0);
+
+// see notion docs: terminux compile [.mp4]
+// WARNING: the brightness vector must be created before hand.
+// since the intended command accepts an optional filename of a brightness vector,
+// the bv must be created by a function wrapping this one (routed by command router)
+// hopefully that makes sense
+void compile_video(std::string vid_filename, std::string out_filename, 
+        BrightnessVector &bv, float scale_factor = 0.0f, 
+        int scaled_x = 0, int scaled_y = 0, bool resize = false, int fps = 0,
+        bool loop = false);
 
 #endif

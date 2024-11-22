@@ -146,8 +146,14 @@ void test_png_frame() {
     cout << "TESTED FRAME READ PNG, CHECK OUTPUT" << endl;
 }
 
+void test_mp4() {
+    BrightnessVector bv{" .:-=+*>#%@"};
+    compile_video("../examples/example.mp4", "../examples/example_video.anim", bv, 0.1f);
+}
+
 int main(int argc, char** argv) {
     // test_bv();
     // test_frame_io();
-    test_png_frame();
+    // test_png_frame();
+    test_mp4();
 }

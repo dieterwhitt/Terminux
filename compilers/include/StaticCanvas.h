@@ -36,7 +36,9 @@ class StaticCanvas {
         int get_width() const;
         int get_height() const;
         int get_length() const;
-        std::vector<Frame> get_frames() const;
+
+        // returns a const reference (read only)
+        const std::vector<Frame> &get_frames() const;
 
         // read function that attempts to read a .stcan file
         // returns a pointer to a heap-allocated static canvas with the given data 

@@ -44,7 +44,7 @@ int StaticCanvas::get_length() const {
     return this->length;
 }
 
-vector<Frame> StaticCanvas::get_frames() const {
+const vector<Frame> &StaticCanvas::get_frames() const {
     return this->frames;
 }
 

@@ -32,7 +32,7 @@ void BrightnessVector::write_bv(string filename) const {
 }
 
 char BrightnessVector::convert_luminance(float luminance) const {
-    const int tolerance = 0.000001;
+    const float tolerance = 0.000001f;
     assert(0 - tolerance <= luminance && luminance <= 255 + tolerance);
 
     // edge case: first char in vector for l = 0

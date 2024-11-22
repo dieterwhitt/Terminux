@@ -38,6 +38,8 @@ class Frame {
         // returns a const reference (read-only) of data
         const std::vector<std::vector<char>> &get_data() const;
 
+        // todo: adjust compile in accordance with behavior outline in notion
+
         // compile multiple frames into animatable (.anim)
         // custom logic if filename not defined: animation{n}.anim (handled in bash)
         // width and height must be defined. if scale is True, it will soft scale,

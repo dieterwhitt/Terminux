@@ -6,7 +6,6 @@
 #define BRIGHTNESS_VECTOR_H
 
 #include <string>
-#include "util.h"
 
 // small string wrapper that represents a brightness scale using characters
 class BrightnessVector {

@@ -262,6 +262,7 @@ void Frame::insert(string anim_filename, int posn) const {
 
 void Frame::scale(int new_width, int new_height) {
     assert(new_width > 0 && new_height > 0);
+    if (new_width == this->width && new_height == this->height) return;
     // to scale a dimension:
     // find scaling factor = l2/l1
     // *integer divide* the NEW tile by this factor to get the corresponding character
