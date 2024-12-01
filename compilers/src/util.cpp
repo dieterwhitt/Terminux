@@ -59,7 +59,7 @@ string get_section(string filename, string label) {
     return output.str();
 }
 
-std::pair<int, int> determine_scaling(int target_x, int target_y, float s, 
+pair<int, int> determine_scaling(int target_x, int target_y, float s, 
         int x, int y) {
     assert(s >= 0 && x >= 0 && y >= 0);
     // s takes precedent: check first
@@ -106,7 +106,7 @@ void compile_video(string vid_filename, string out_filename, BrightnessVector &b
     cout << "VIDEO FOUND. WIDTH: " << width << " HEIGHT: " << height << " FPS: " << fps << endl;
 
     // dimensions of anim
-    std::pair dimensions = determine_scaling(width, height, scale_factor, scaled_x, scaled_y);
+    pair dimensions = determine_scaling(width, height, scale_factor, scaled_x, scaled_y);
 
     vector<Frame> frames;
     cv::Mat mat_frame; // a single frame
