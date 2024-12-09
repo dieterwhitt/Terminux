@@ -84,6 +84,7 @@ while true; do
     validate_positivity $frames
 
     readint x
+
     validate_positivity $x
 
     readint y
