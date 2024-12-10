@@ -50,7 +50,7 @@ void readFrame(ifstream &ifs, int y_res, int framerate) {
     while (!ifs.eof()) {
         // wait until 
         while (buffer_locks.size() >= BUFFER_TIME * framerate) {
-            this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_US));
+            this_thread::sleep_for(chrono::milliseconds(BUFFER_DELAY_US));
         }
 
         string frame = "";
@@ -83,9 +83,11 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
     int frames_read = 0;
     long long total_read_time_us = 0;
     long long frame_delay_us = static_cast<long long>(1e6 / framerate);
+
+    long long carried_delay = 0;
     while (frames_read < numframes) {
         while (buffer_locks.size() == 0) {
-            this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_US));
+            this_thread::sleep_for(chrono::milliseconds(BUFFER_DELAY_US));
         }
 
         auto start = std::chrono::high_resolution_clock::now();
@@ -101,26 +103,32 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
 
         auto stop = std::chrono::high_resolution_clock::now();
         // Calculate the duration
-        long long duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+        long long real_sleep = frame_delay_us + carried_delay - std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-        cerr << "[READER] time spent printing and clearing a frame: " << 
-        duration << "us" << endl;
-
+        //cerr << "[READER] time spent printing and clearing a frame: " << duration << "us" << endl;
 
         // sleep for 1 frame
         auto start_sleep = std::chrono::high_resolution_clock::now();
 
-        this_thread::sleep_for(chrono::microseconds(frame_delay_us));
+        this_thread::sleep_for(chrono::microseconds(max(real_sleep, 0LL)));
+
+        // if print/clear takes too long (longer than dedicated sleep)
+        if (real_sleep < 0) {
+            carried_delay += real_sleep;
+        } else {
+            carried_delay = 0;
+        }
 
         auto stop_sleep = std::chrono::high_resolution_clock::now();
 
-        long long duration_sleep = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+        // long long duration_sleep = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
         ++frames_read;
-        total_read_time_us += duration;
+        total_read_time_us += real_sleep;
     }
-    cerr << "[READER] time spent printing and clearing all frames: " << 
-        total_read_time_us << "us" << endl;
+
+    // cerr << "[READER] time spent printing and clearing all frames: " << 
+    //    total_read_time_us << "us" << endl;
 }
 
 int main(int argc, char **argv) {
@@ -136,7 +144,8 @@ int main(int argc, char **argv) {
     ifstream ifs{argv[1]};
 
     // read metadata from file
-    int framerate, num_frames, x_res, y_res, loop;
+    float framerate;
+    int num_frames, x_res, y_res, loop;
     ifs >> framerate >> num_frames >> x_res >> y_res >> loop;
 
     // initialize read/write threads
