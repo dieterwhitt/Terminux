@@ -87,7 +87,7 @@ void readFrame(ifstream &ifs, int y_res, int framerate) {
     }
 }
 
-void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
+void writeFrame(ostream &out, int y_res, int numframes, double framerate) {
     int frames_read = 0;
     long long total_sleep_time_us = 0;
     long long total_read_time_us = 0;
@@ -128,7 +128,7 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
             carried_delay = max(carried_delay - real_sleep, 0LL);
         }
         */
-       precise_sleep(real_sleep);
+        precise_sleep(max(0LL, real_sleep));
         
         ++frames_read;
         total_read_time_us += real_sleep;
@@ -151,7 +151,7 @@ int main(int argc, char **argv) {
     ifstream ifs{argv[1]};
 
     // read metadata from file
-    float framerate;
+    double framerate;
     int num_frames, x_res, y_res, loop;
     ifs >> framerate >> num_frames >> x_res >> y_res >> loop;
 
