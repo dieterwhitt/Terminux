@@ -96,6 +96,7 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
 
     long long frame_delay_us = static_cast<long long>(1e6 / framerate);
 
+    long long carried_delay = 0;
     while (frames_read < numframes) {
         while (buffer_locks.size() == 0) {
             this_thread::sleep_for(chrono::milliseconds(BUFFER_DELAY_MS));
@@ -114,36 +115,33 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
 
         auto stop = std::chrono::high_resolution_clock::now();
         // Calculate the duration
-        long long duration = std::chrono::duration_cast<std::chrono::microseconds>
-                (stop - start).count();
+        long long real_sleep = frame_delay_us + carried_delay - std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-        cerr << "[READER] time spent printing and clearing a frame: " << 
-                duration << "us" << endl;
-
+        //cerr << "[READER] time spent printing and clearing a frame: " << duration << "us" << endl;
 
         auto start_sleep = std::chrono::high_resolution_clock::now();
 
         // sleep for 1 frame
-        // this_thread::sleep_for(chrono::microseconds(frame_delay_us));
-        precise_sleep(frame_delay_us);
+        // this_thread::sleep_for(chrono::microseconds(max(real_sleep, 0LL)));
+
+        // if print/clear takes too long (longer than dedicated sleep)
+        if (real_sleep < 0) {
+            carried_delay += real_sleep;
+        } else {
+            carried_delay = 0;
+        }
+        precise_sleep(real_sleep);
 
         auto stop_sleep = std::chrono::high_resolution_clock::now();
 
-        long long duration_sleep = std::chrono::duration_cast<std::chrono::microseconds>
-                (stop_sleep - start_sleep).count();
-
-        cerr << "[READER] extra time spent sleeping on a frame: " << 
-                duration_sleep - frame_delay_us << "us" << endl;
+        // long long duration_sleep = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
         ++frames_read;
-        total_read_time_us += duration;
-        total_sleep_time_us += (duration_sleep - frame_delay_us);
+        total_read_time_us += real_sleep;
     }
-    cerr << "[READER] time spent printing and clearing all frames: " << 
-        total_read_time_us << "us" << endl;
-    cerr << "[READER] extra time spent sleeping: " << 
-        total_sleep_time_us << "us" << endl;
-    
+
+    // cerr << "[READER] time spent printing and clearing all frames: " << 
+    //    total_read_time_us << "us" << endl;
 }
 
 int main(int argc, char **argv) {
@@ -159,7 +157,8 @@ int main(int argc, char **argv) {
     ifstream ifs{argv[1]};
 
     // read metadata from file
-    int framerate, num_frames, x_res, y_res, loop;
+    float framerate;
+    int num_frames, x_res, y_res, loop;
     ifs >> framerate >> num_frames >> x_res >> y_res >> loop;
 
     // initialize read/write threads
