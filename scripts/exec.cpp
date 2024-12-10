@@ -35,6 +35,7 @@ deque<string> buffer(1);
 deque<unique_ptr<mutex>> buffer_locks;
 
 void clearConsole() {
+    /*
     // struct winsize w;
     // ioctl(STDOUT_FILENO, TIOCGWINSZ, &w); // get terminal size
     // for (int i = 0; i < w.ws_row; ++i) {
@@ -43,7 +44,16 @@ void clearConsole() {
     // }
     //std::cout.flush();
     //std::cout << "\033[2J\033[H";
+    */
     printf("\033[2J\033[H");
+}
+
+inline void precise_sleep(long long duration_us) {
+    auto start = std::chrono::high_resolution_clock::now();
+    auto end = start + std::chrono::microseconds(duration_us);
+    while (std::chrono::high_resolution_clock::now() < end) {
+        // busy-wait loop
+    }
 }
 
 void readFrame(ifstream &ifs, int y_res, int framerate) {
@@ -81,7 +91,9 @@ void readFrame(ifstream &ifs, int y_res, int framerate) {
 
 void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
     int frames_read = 0;
+    long long total_sleep_time_us = 0;
     long long total_read_time_us = 0;
+
     long long frame_delay_us = static_cast<long long>(1e6 / framerate);
 
     long long carried_delay = 0;
@@ -107,10 +119,10 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
 
         //cerr << "[READER] time spent printing and clearing a frame: " << duration << "us" << endl;
 
-        // sleep for 1 frame
         auto start_sleep = std::chrono::high_resolution_clock::now();
 
-        this_thread::sleep_for(chrono::microseconds(max(real_sleep, 0LL)));
+        // sleep for 1 frame
+        // this_thread::sleep_for(chrono::microseconds(max(real_sleep, 0LL)));
 
         // if print/clear takes too long (longer than dedicated sleep)
         if (real_sleep < 0) {
@@ -118,6 +130,7 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
         } else {
             carried_delay = 0;
         }
+        precise_sleep(real_sleep);
 
         auto stop_sleep = std::chrono::high_resolution_clock::now();
 
