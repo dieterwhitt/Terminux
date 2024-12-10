@@ -35,6 +35,7 @@ deque<string> buffer(1);
 deque<unique_ptr<mutex>> buffer_locks;
 
 void clearConsole() {
+    /*
     // struct winsize w;
     // ioctl(STDOUT_FILENO, TIOCGWINSZ, &w); // get terminal size
     // for (int i = 0; i < w.ws_row; ++i) {
@@ -43,7 +44,16 @@ void clearConsole() {
     // }
     //std::cout.flush();
     //std::cout << "\033[2J\033[H";
+    */
     printf("\033[2J\033[H");
+}
+
+inline void precise_sleep(long long duration_us) {
+    auto start = std::chrono::high_resolution_clock::now();
+    auto end = start + std::chrono::microseconds(duration_us);
+    while (std::chrono::high_resolution_clock::now() < end) {
+        // busy-wait loop
+    }
 }
 
 void readFrame(ifstream &ifs, int y_res, int framerate) {
@@ -81,8 +91,11 @@ void readFrame(ifstream &ifs, int y_res, int framerate) {
 
 void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
     int frames_read = 0;
+    long long total_sleep_time_us = 0;
     long long total_read_time_us = 0;
+
     long long frame_delay_us = static_cast<long long>(1e6 / framerate);
+
     while (frames_read < numframes) {
         while (buffer_locks.size() == 0) {
             this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_US));
@@ -101,26 +114,36 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
 
         auto stop = std::chrono::high_resolution_clock::now();
         // Calculate the duration
-        long long duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+        long long duration = std::chrono::duration_cast<std::chrono::microseconds>
+                (stop - start).count();
 
         cerr << "[READER] time spent printing and clearing a frame: " << 
-        duration << "us" << endl;
+                duration << "us" << endl;
 
 
-        // sleep for 1 frame
         auto start_sleep = std::chrono::high_resolution_clock::now();
 
-        this_thread::sleep_for(chrono::microseconds(frame_delay_us));
+        // sleep for 1 frame
+        // this_thread::sleep_for(chrono::microseconds(frame_delay_us));
+        precise_sleep(frame_delay_us);
 
         auto stop_sleep = std::chrono::high_resolution_clock::now();
 
-        long long duration_sleep = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+        long long duration_sleep = std::chrono::duration_cast<std::chrono::microseconds>
+                (stop_sleep - start_sleep).count();
+
+        cerr << "[READER] extra time spent sleeping on a frame: " << 
+                duration_sleep - frame_delay_us << "us" << endl;
 
         ++frames_read;
         total_read_time_us += duration;
+        total_sleep_time_us += (duration_sleep - frame_delay_us);
     }
     cerr << "[READER] time spent printing and clearing all frames: " << 
         total_read_time_us << "us" << endl;
+    cerr << "[READER] extra time spent sleeping: " << 
+        total_sleep_time_us << "us" << endl;
+    
 }
 
 int main(int argc, char **argv) {
