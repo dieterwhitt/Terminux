@@ -22,11 +22,11 @@ using namespace std;
 
 // https://www.geeksforgeeks.org/std-mutex-in-cpp/
 
-// number of frames that will be loaded into memory at a MAXIMUM
+// how much time ahead frames will be added to the buffer
 const int BUFFER_TIME = 10;
 
 // time in ms the read/write thread will wait if buffer full or empty, respectively
-const int BUFFER_DELAY_US = 1; 
+const int BUFFER_DELAY_MS = 1; 
 
 // buffer of frames to be loaded into memory for smooth framerate
 deque<string> buffer(1);
@@ -60,7 +60,7 @@ void readFrame(ifstream &ifs, int y_res, int framerate) {
     while (!ifs.eof()) {
         // wait until 
         while (buffer_locks.size() >= BUFFER_TIME * framerate) {
-            this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_US));
+            this_thread::sleep_for(chrono::milliseconds(BUFFER_DELAY_MS));
         }
 
         string frame = "";
@@ -98,7 +98,7 @@ void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
 
     while (frames_read < numframes) {
         while (buffer_locks.size() == 0) {
-            this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_US));
+            this_thread::sleep_for(chrono::milliseconds(BUFFER_DELAY_MS));
         }
 
         auto start = std::chrono::high_resolution_clock::now();
