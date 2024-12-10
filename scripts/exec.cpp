@@ -5,6 +5,11 @@
 #include <deque>
 #include <cstdlib>
 #include <memory>
+#include <ctime>
+
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 
 using namespace std;
 
@@ -18,22 +23,34 @@ using namespace std;
 // https://www.geeksforgeeks.org/std-mutex-in-cpp/
 
 // number of frames that will be loaded into memory at a MAXIMUM
-const int BUFFER_SIZE = 100;
+const int BUFFER_TIME = 10;
 
 // time in ms the read/write thread will wait if buffer full or empty, respectively
-const int BUFFER_DELAY_MS = 1; 
+const int BUFFER_DELAY_US = 1; 
 
 // buffer of frames to be loaded into memory for smooth framerate
 deque<string> buffer(1);
 
 // locks for each buffer frame to prevent race conditions
-deque<unique_ptr<mutex>> buffer_locks(1);
+deque<unique_ptr<mutex>> buffer_locks;
 
-void readFrame(ifstream &ifs, int y_res) {
+void clearConsole() {
+    // struct winsize w;
+    // ioctl(STDOUT_FILENO, TIOCGWINSZ, &w); // get terminal size
+    // for (int i = 0; i < w.ws_row; ++i) {
+    //     printf("\n");
+    //     //std::cout << "\n";
+    // }
+    //std::cout.flush();
+    //std::cout << "\033[2J\033[H";
+    printf("\033[2J\033[H");
+}
+
+void readFrame(ifstream &ifs, int y_res, int framerate) {
     while (!ifs.eof()) {
         // wait until 
-        while (buffer_locks.size() >= BUFFER_SIZE) {
-            this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_MS));
+        while (buffer_locks.size() >= BUFFER_TIME * framerate) {
+            this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_US));
         }
 
         string frame = "";
@@ -62,24 +79,53 @@ void readFrame(ifstream &ifs, int y_res) {
     }
 }
 
-void writeFrame(ostream &out, int y_res, int numframes) {
-    int cnt = 0;
-    while (cnt < numframes) {
+void writeFrame(ostream &out, int y_res, int numframes, int framerate) {
+    int frames_read = 0;
+    long long total_read_time_us = 0;
+    long long frame_delay_us = static_cast<long long>(1e6 / framerate);
+    while (frames_read < numframes) {
         while (buffer_locks.size() == 0) {
-            this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_MS));
+            this_thread::sleep_for(chrono::microseconds(BUFFER_DELAY_US));
         }
 
-        buffer_locks.front()->lock();
-        cout << buffer.front();
-        buffer_locks.front()->unlock();
-        buffer.pop_front();
+        auto start = std::chrono::high_resolution_clock::now();
 
-        system("clear");
-        //cout << "\033[2J";
+        // lock front, print, unlock
+        buffer_locks.front()->lock();
+        clearConsole();
+        printf("%s", buffer.front().c_str());
+        buffer_locks.front()->unlock();
+        // pop buffer and mutex front
+        buffer.pop_front();
+        buffer_locks.pop_front();
+
+        auto stop = std::chrono::high_resolution_clock::now();
+        // Calculate the duration
+        long long duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+
+        cerr << "[READER] time spent printing and clearing a frame: " << 
+        duration << "us" << endl;
+
+
+        // sleep for 1 frame
+        auto start_sleep = std::chrono::high_resolution_clock::now();
+
+        this_thread::sleep_for(chrono::microseconds(frame_delay_us));
+
+        auto stop_sleep = std::chrono::high_resolution_clock::now();
+
+        long long duration_sleep = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+
+        ++frames_read;
+        total_read_time_us += duration;
     }
+    cerr << "[READER] time spent printing and clearing all frames: " << 
+        total_read_time_us << "us" << endl;
 }
 
 int main(int argc, char **argv) {
+    buffer_locks.push_back(make_unique<mutex>());
+
     // ensure that argument is added
     if (argc != 2) {
         cout << "Usage: ./exec [filename.anim]" << endl;
@@ -94,8 +140,10 @@ int main(int argc, char **argv) {
     ifs >> framerate >> num_frames >> x_res >> y_res >> loop;
 
     // initialize read/write threads
-    thread read_thread(readFrame, ref(ifs), y_res);
-    thread write_thread(writeFrame, ref(cout), y_res, num_frames);
+    thread read_thread(readFrame, ref(ifs), y_res, framerate);
+    thread write_thread(writeFrame, ref(cout), y_res, num_frames, framerate);
+
+    time_t start = time(NULL);
 
     do {
         // start threads
@@ -103,4 +151,6 @@ int main(int argc, char **argv) {
         // include delay time between thread starts?
         write_thread.join();
     } while (loop);
+
+    cout << time(NULL) - start << endl;
 }

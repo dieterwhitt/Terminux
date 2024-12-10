@@ -8,3 +8,5 @@ practice/
 build/
 bin/
 *.mp4
+report.txt
+examples/
