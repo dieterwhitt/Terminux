@@ -10,3 +10,5 @@ bin/
 *.mp4
 report.txt
 examples/
+*.zip
+*.dSYM
